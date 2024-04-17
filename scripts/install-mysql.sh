@@ -3,10 +3,10 @@
 # Verificando se já está instalado.
 which mysql &> /dev/null
 
-if [ $? -ne 0 ]
+if [ $? -eq 0 ]
 then
     echo -e '\nO MySQL JÁ ESTÁ INSTALADO!'
-    exit 1
+    return 1
 fi
 
 echo -e '\n INSTALANDO O MySQL...\n'

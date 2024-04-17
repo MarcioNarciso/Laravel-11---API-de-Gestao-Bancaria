@@ -3,10 +3,10 @@
 # Verificando se já está instalado.
 which php &> /dev/null
 
-if [ $? -ne 0 ]
+if [ $? -eq 0 ]
 then
     echo -e '\nO PHP JÁ ESTÁ INSTALADO!'
-    exit 1
+    return 1
 fi
 
 echo -e '\n INSTALANDO O PHP...\n'
@@ -28,6 +28,6 @@ sudo apt install php-{cli,common,curl,zip,gd,mysql,xml,mbstring,json,intl,bcmath
 sudo systemctl start php8.3-fpm.service
 
 # Habilita o serviço do PHP-FPM para inicializar no boot do SO
-sudo systemctl enable php8.3-fpm.service 
+sudo systemctl enable php8.3-fpm.service
 
 echo -e '\n PHP INSTALADO!\n'
