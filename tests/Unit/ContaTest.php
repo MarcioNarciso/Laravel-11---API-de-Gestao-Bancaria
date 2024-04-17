@@ -26,7 +26,7 @@ class ContaTest extends TestCase
 
         $this->conta->realizarTransacao($transacao);
 
-        $this->assertEquals((1000 - (100 + (100 * 0.3))), $this->conta->saldo);
+        $this->assertEquals((1000 - (100 + (100 * 0.03))), $this->conta->saldo);
     }
 
     public function test_deve_efetuar_pagamento_via_cartao_de_credito(): void
@@ -35,7 +35,7 @@ class ContaTest extends TestCase
 
         $this->conta->realizarTransacao($transacao);
 
-        $this->assertEquals((1000 - (100 + (100 * 0.5))), $this->conta->saldo);
+        $this->assertEquals((1000 - (100 + (100 * 0.05))), $this->conta->saldo);
     }
 
     public function test_deve_efetuar_pagamento_via_pix(): void

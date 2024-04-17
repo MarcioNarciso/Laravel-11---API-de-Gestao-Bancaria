@@ -14,7 +14,7 @@ class TaxaDoDebitoTest extends TestCase
 
         $valorDaTaxaDaTransacao = (new TaxaDoDebito())->calcularValorTaxa($valorDaTransacao);
 
-        $this->assertEquals(($valorDaTransacao * 0.3), $valorDaTaxaDaTransacao);
+        $this->assertEquals(($valorDaTransacao * (3 / 100)), $valorDaTaxaDaTransacao);
     }
 
     public function test_deve_calcular_o_valor_da_transacao_com_base_na_taxa_do_debito_negativo() : void
@@ -23,6 +23,6 @@ class TaxaDoDebitoTest extends TestCase
 
         $valorDaTaxaDaTransacao = (new TaxaDoDebito())->calcularValorTaxa($valorDaTransacao);
 
-        $this->assertEquals((100 * 0.3), $valorDaTaxaDaTransacao);
+        $this->assertEquals((100 * (3 / 100)), $valorDaTaxaDaTransacao);
     }
 }
