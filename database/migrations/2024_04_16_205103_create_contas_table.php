@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('contas', function (Blueprint $table) {
             $table->id();
             $table->double('saldo');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

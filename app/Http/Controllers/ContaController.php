@@ -18,13 +18,10 @@ class ContaController extends Controller
         $contaId = $request->query('id');
 
         /**
-         * Se o parâmetro "id" não existir, retorna o HTTP STATUS 400.
+         * Se o parâmetro "id" não existir, retorna todas as contas cadastradas.
          */
         if (empty($contaId)) {
-            return response([
-                'erro' => 'O parâmetro "id" está ausente.'
-            ],
-            Response::HTTP_BAD_REQUEST);
+            return response(ContaResource::collection(Conta::all()));
         }
 
         $conta = Conta::find($contaId);
@@ -90,5 +87,21 @@ class ContaController extends Controller
          * Retorna a nova conta com o HTTP STATUS 201.
          */
         return response(new ContaResource($conta), Response::HTTP_CREATED);
+    }
+
+    /**
+     * Desativa determinada conta pelo ID.
+     */
+    public function destroy(string $id)
+    {
+        $conta = Conta::find($id);
+
+        if (empty($conta)) {
+            return response(status: Response::HTTP_NOT_FOUND);
+        }
+
+        $conta->delete();
+
+        return response(status: Response::HTTP_OK);
     }
 }

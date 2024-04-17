@@ -17,7 +17,8 @@ class ContaResource extends JsonResource
     {
         return [
             'conta_id' => $this->id,
-            'saldo' => formatCurrency($this->saldo)
+            'saldo' => formatCurrency($this->saldo),
+            'criada_em' => $this->created_at
         ];
     }
 }
