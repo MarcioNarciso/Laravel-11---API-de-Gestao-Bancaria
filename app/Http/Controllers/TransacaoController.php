@@ -28,7 +28,7 @@ class TransacaoController extends Controller
         $validator = Validator::make($dados, [
             'forma_pagamento' => 'required|size:1|uppercase',
             'conta_id' => 'required',
-            'valor' => 'required|numeric'
+            'valor' => 'required|numeric|min:1'
         ]);
 
         /**

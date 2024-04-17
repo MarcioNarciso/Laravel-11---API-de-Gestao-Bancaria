@@ -18,7 +18,7 @@ class ContaController extends Controller
         $contaId = $request->query('id');
 
         /**
-         * Verifica se o parâmetro "id" é válido.
+         * Se o parâmetro "id" não existir, retorna o HTTP STATUS 400.
          */
         if (empty($contaId)) {
             return response([
@@ -29,10 +29,10 @@ class ContaController extends Controller
 
         $conta = Conta::find($contaId);
 
+        /**
+         * Se a conta requisitada não existir, é retornado o HTTP STATUS 404.
+         */
         if (empty($conta)) {
-            /**
-             * Se a conta requisitada não existir, é retornado o HTTP STATUS 404.
-             */
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
@@ -54,8 +54,8 @@ class ContaController extends Controller
          * O ID da conta não é obrigatório, mas se existir, deve ser inteiro.
          */
         $validator = Validator::make($conta, [
-            'conta_id' => 'nullable|integer',
-            'valor' => 'required|numeric'
+            'conta_id' => 'nullable|integer|min:1',
+            'valor' => 'required|numeric|min:0'
         ]);
 
         /**
