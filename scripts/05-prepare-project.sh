@@ -11,7 +11,7 @@ cd "$DIR_ATUAL"/../
 php composer.phar install
 
 # Executa as migrações
-php artisan migrate
+php artisan migrate --force
 
 # Executa as otimizações
 php artisan optimize
@@ -20,11 +20,14 @@ php artisan event:cache
 php artisan route:cache
 php artisan view:cache
 
-# Volta para o diretório de trabalho original
-cd -
+# Cria um novo arquivo dot env para produção
+cp .env.example .env
+
+# Gera uma nova chave para produção
+php artisan key:generate
 
 # Copia o arquivo de configuração do server block para o diretório padrão do Nginx
-sudo cp "$DIR_ATUAL"/nginx-server-block/gestao-bancaria /etc/nginx/sites-available
+sudo cp "$DIR_ATUAL"/scripts/nginx-server-block/gestao-bancaria /etc/nginx/sites-available
 
 # Cria o symlink para a pasta sites-enabled
 sudo ln -s /etc/nginx/sites-available/gestao-bancaria /etc/nginx/sites-enabled
