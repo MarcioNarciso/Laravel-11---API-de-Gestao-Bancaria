@@ -15,10 +15,6 @@ php artisan migrate --force
 
 # Executa as otimizações
 php artisan optimize
-php artisan config:cache
-php artisan event:cache
-php artisan route:cache
-php artisan view:cache
 
 # Cria um novo arquivo dot env para produção
 cp .env.example .env
