@@ -4,8 +4,11 @@ echo -e '\n PREPARANDO O PROJETO...\n'
 
 DIR_ATUAL=$(dirname "$0")
 
+# Altera o diretório de trabalho
+cd "$DIR_ATUAL"/../
+
 # Instala as dependências do projeto
-php "$DIR_ATUAL"/../composer.phar update
+php composer.phar install
 
 # Executa as migrações
 php artisan migrate
