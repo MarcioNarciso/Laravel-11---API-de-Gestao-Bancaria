@@ -58,10 +58,10 @@ class ContaController extends Controller
             'valor' => 'required|numeric'
         ]);
 
+        /**
+         * Caso as informações da conta não sejam válidas, retorna o HTTP STATUS 400.
+         */
         if ($validator->fails()) {
-            /**
-             * Caso as informações da conta não sejam válidas, retorna o HTTP STATUS 400.
-             */
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
