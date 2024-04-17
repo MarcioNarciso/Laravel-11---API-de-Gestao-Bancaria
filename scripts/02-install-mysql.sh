@@ -22,3 +22,5 @@ sudo systemctl start mysql
 sudo systemctl enable mysql
 
 echo -e '\n MySQL INSTALADO!\n'
+
+echo -e '\n POR FAVOR, REINICIE O S.O. PARA UMA CORRETA EXECUÇÃO DOS PRÓXIMOS SCRIPTS.\n'

@@ -20,3 +20,5 @@ sudo apt install nginx -y
 #echo -e "\n\nEXECUTE O COMANDO 'sudo ufw app list' PARA VER OS APPs DISPONÍVEIS E, DEPOIS, LIBERE O NGINX NO FIREWALL COM 'sudo ufw allow 'Nginx Full''.\n\n"
 
 echo -e '\n NGINX INSTALADO!\n';
+
+echo -e '\n POR FAVOR, REINICIE O S.O. PARA UMA CORRETA EXECUÇÃO DOS PRÓXIMOS SCRIPTS.\n'
