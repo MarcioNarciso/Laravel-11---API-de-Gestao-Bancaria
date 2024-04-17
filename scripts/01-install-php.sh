@@ -22,7 +22,19 @@ sudo add-apt-repository ppa:ondrej/php -y
 sudo apt install php -y
 
 # Instala extensões comuns do PHP e o PHP-FPM
-sudo apt install php-{cli,common,curl,zip,gd,mysql,xml,mbstring,json,intl,bcmath,fpm,sqlite} -y
+sudo apt install php-cli -y
+sudo apt install php-common -y
+sudo apt install php-curl -y
+sudo apt install php-zip -y
+sudo apt install php-gd -y
+sudo apt install php-mysql -y
+sudo apt install php-xml -y
+sudo apt install php-mbstring -y
+sudo apt install php-json -y
+sudo apt install php-intl -y
+sudo apt install php-bcmath -y
+sudo apt install php-fpm -y
+sudo apt install php-sqlite -y
 
 # Inicia o serviço do PHP-FPM
 sudo systemctl start php8.3-fpm.service
