@@ -34,7 +34,7 @@ sudo apt install php-json -y
 sudo apt install php-intl -y
 sudo apt install php-bcmath -y
 sudo apt install php-fpm -y
-sudo apt install php-sqlite -y
+sudo apt install php-sqlite3 -y
 
 # Inicia o serviço do PHP-FPM
 sudo systemctl start php8.3-fpm.service
