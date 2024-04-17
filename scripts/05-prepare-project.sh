@@ -20,6 +20,9 @@ php artisan event:cache
 php artisan route:cache
 php artisan view:cache
 
+# Volta para o diretório de trabalho original
+cd -
+
 # Copia o arquivo de configuração do server block para o diretório padrão do Nginx
 sudo cp "$DIR_ATUAL"/nginx-server-block/gestao-bancaria /etc/nginx/sites-available
 
