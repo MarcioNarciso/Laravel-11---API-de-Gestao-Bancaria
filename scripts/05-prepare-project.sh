@@ -32,12 +32,25 @@ sudo cp "$DIR_ATUAL"/scripts/nginx-server-block/gestao-bancaria /etc/nginx/sites
 # Cria o symlink para a pasta sites-enabled
 sudo ln -s /etc/nginx/sites-available/gestao-bancaria /etc/nginx/sites-enabled
 
+# Remove o default de sites-enabled
+sudo rm /etc/nginx/sites-enabled/default
+
 # Cria o symlink do projeto para a pasta de onde o Nginx irá servi-lo.
 DIR_PROJETO=$(readlink -f .)
 sudo ln -s "$DIR_PROJETO" /var/www/
 
+# 
+sudo chown -R $USER:www-data "$DIR_PROJETO"
+
+# Atribui permissão de escrita no diretório storage
+sudo chmod 777 -R "$DIR_PROJETO"/storage/
+
+# Define as permissões para o Nginx poder acessar a pasta do projeto.
+sudo chmod 755 /home
+sudo chmod 755 /home/$USER
+
 # Adiciona o host
-sudo bash -c "echo -e '\n127.0.0.99  gestao-bancaria' >> /etc/hosts"
+#sudo bash -c "echo -e '\n127.0.0.99  gestao-bancaria' >> /etc/hosts"
 
 # Reinicia o Nginx
 sudo systemctl restart nginx
