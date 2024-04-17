@@ -56,11 +56,9 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
-        $transacaoBancaria = new TransacaoBancaria($formaDeParamento, $dados['valor']);
-
         try {
 
-            $conta->realizarTransacao($transacaoBancaria);
+            $conta->realizarTransacao(new TransacaoBancaria($formaDeParamento, $dados['valor']));
 
         } catch (ContaComSaldoInsuficienteException $e) {
             return response(status: Response::HTTP_NOT_FOUND);
