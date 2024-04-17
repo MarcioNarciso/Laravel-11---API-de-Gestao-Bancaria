@@ -7,6 +7,6 @@ class TaxaDoCredito extends RegraCalculoTaxa
 {
     public function getTaxa() : float
     {
-        return 0.5;
+        return 0.05;
     }
 }

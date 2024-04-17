@@ -7,6 +7,6 @@ class TaxaDoDebito extends RegraCalculoTaxa
 {
     public function getTaxa() : float
     {
-        return 0.3;
+        return round(3 / 100, 2);
     }
 }
