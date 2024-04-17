@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\ContaComSaldoInsuficienteException;
 use App\Factories\RegraCalculoTaxaFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,7 +40,7 @@ class Conta extends Model
          * é lançada uma exceção.
          */
         if (! $hasContaSaldoSuficiente) {
-            throw new \Exception("A conta '{$this->id}' não tem saldo suficiente para completar a transação.");
+            throw new ContaComSaldoInsuficienteException("A conta '{$this->id}' não tem saldo suficiente para completar a transação.");
         }
 
         $this->saldo = $this->saldo - $valorTotalDaTransacao;
