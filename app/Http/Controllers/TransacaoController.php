@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Enums\FormaPagamento;
 use App\Exceptions\ContaComSaldoInsuficienteException;
 use App\Http\Resources\ContaResource;
+use App\Http\Resources\TransacaoBancariaResource;
 use App\Models\Conta;
-use App\Models\Transacao;
 use App\Models\TransacaoBancaria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class TransacaoController extends Controller
 {
@@ -27,12 +26,13 @@ class TransacaoController extends Controller
          */
         $validator = Validator::make($dados, [
             'forma_pagamento' => 'required|size:1|uppercase',
-            'conta_id' => 'required',
+            'pagador_id' => 'required|integer|min:1',
+            'recebedor_id' => 'required|integer|min:1',
             'valor' => 'required|numeric|min:1'
         ]);
 
         /**
-         * Caso as informações da conta não sejam válidas, retorna o HTTP STATUS 400.
+         * Caso as informações da transferência não sejam válidas, retorna o HTTP STATUS 400.
          */
         if ($validator->fails()) {
             return response(status: Response::HTTP_BAD_REQUEST);
@@ -47,22 +47,32 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        $conta = Conta::find($dados['conta_id']);
+        $pagador = Conta::find($dados['pagador_id']);
+        $recebedor = Conta::find($dados['recebedor_id']);
 
         /**
-         * Caso a conta informada não exista, retorna o HTTP STATUS 404 para o cliente.
+         * Caso a conta pagadora ou recebedora informada não existam, 
+         * retorna o HTTP STATUS 404 para o cliente.
          */
-        if (empty($conta)) {
+        if (empty($pagador) || empty($recebedor)) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
+        $transacao = new TransacaoBancaria([
+            'forma_pagamento' => $formaDeParamento, 
+            'valor' => $dados['valor']
+        ]);
+
+        $transacao->pagador()->associate($pagador);
+        $transacao->recebedor()->associate($recebedor);
+
         try {
 
-            $conta->realizarTransacao(new TransacaoBancaria($formaDeParamento, $dados['valor']));
+            Conta::realizarTransacao($transacao);
 
         } catch (ContaComSaldoInsuficienteException $e) {
             return response(status: Response::HTTP_NOT_FOUND);
-        } catch (Exception) {
+        } catch (RegraCalculoTaxaInexistenteException) {
             /**
              * Caso a forma de pagamento fornecida seja inválida, retorna o HTTP STATUS 400.
              * Forma de pagamento sem classe de cálculo da taxa.
@@ -70,11 +80,21 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        /**
-         * Persiste a conta com o novo saldo.
-         */
-        $conta->save();
+        return response(new ContaResource($recebedor), Response::HTTP_CREATED);
+    }
 
-        return response(new ContaResource($conta), Response::HTTP_CREATED);
+    public function listarTransacoes(int $contaId) {
+        
+        $conta = Conta::find($contaId);
+
+        if (empty($conta)) {
+            return response(status: Response::HTTP_NOT_FOUND);
+        }
+
+        $transacoesDaConta = TransacaoBancaria::where('pagador_id', $contaId)
+                                                ->orWhere('recebedor_id', $contaId)
+                                                ->get();
+
+        return response(TransacaoBancariaResource::collection($transacoesDaConta));
     }
 }
