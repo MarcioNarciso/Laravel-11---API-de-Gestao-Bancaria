@@ -7,3 +7,4 @@ use Illuminate\Support\Facades\Route;
 Route::resource('conta', ContaController::class);
 
 Route::post('/transacao', [TransacaoController::class, 'transacao'])->name('transacao');
+Route::get('/transacao/{contaId}', [TransacaoController::class, 'listarTransacoes'])->name('listarTransacoes');
