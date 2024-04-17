@@ -8,6 +8,7 @@ use App\Models\RegrasCalculoTaxas\{
     TaxaDoPix,
     RegraCalculoTaxa
 };
+use App\Exceptions\RegraCalculoTaxaInexistenteException;
 
 class RegraCalculoTaxaFactory
 {
@@ -21,7 +22,7 @@ class RegraCalculoTaxaFactory
      * Instancia a classe da regra de cálculo da taxa com base na forma de pagamento.
      * @param FormaPagamento $formaPagamento
      * @return \App\Models\RegrasCalculoTaxas\RegraCalculoTaxa
-     * @throws \Exception
+     * @throws \App\Exceptions\RegraCalculoTaxaInexistenteException
      */
     public static function make(FormaPagamento $formaPagamento) : RegraCalculoTaxa
     {
@@ -35,7 +36,7 @@ class RegraCalculoTaxaFactory
          * pagamento, é lançada uma exceção.
          */
         if (empty($regraCalculo)) {
-            throw new \Exception('Forma de Pagamento inválida.');
+            throw new RegraCalculoTaxaInexistenteException('Forma de Pagamento inválida.');
         }
 
         return new $regraCalculo();
