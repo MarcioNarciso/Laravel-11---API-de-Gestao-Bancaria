@@ -6,7 +6,7 @@ O endpoint "/conta" deveria criar e fornecer informações sobre o número da co
 e o saldo. O endpoint "/transacao" seria responsável por realizar diversas 
 operações financeiras.
 
-A API implementada para este desafio pode ser acessada pelo link: 
+A API implementada para esse desafio pode ser acessada pelo link: 
 [API de Gestão Bancária](http://api-bancaria.marcionarciso.dev.br:8080/).
 
 ### Padrões de Projeto Utilizados
@@ -31,7 +31,7 @@ Para executar esse projeto, é necessário já ter instalado no sistema:
 * Nginx
 * MySQL
 
-## Scripts de Implantação
+## Scripts de Setup do Ambiente
 
 Caso queira realizar o deploy desse projeto em um distribuição do Linux baseada
 no Debian, na raiz do projeto há a pasta "scripts/" que contém Shell Scripts 
@@ -45,6 +45,9 @@ extensões necessárias para esse projeto;
 3. <b>03-create-database-user.sh</b> : Cria no MySQL o usuário de acesso 
 utilizado pela aplicação;
 4. <b>04-install-nginx.sh</b> : Instala o Nginx.
+
+## Scripts de Implantação
+
 5. <b>05-prepare-project.sh</b> : Realiza as preparações finais para a execução 
 da aplicação, como a instalação das dependências, a criação do servidor virtual 
 no Nginx, etc.
