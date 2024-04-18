@@ -6,6 +6,25 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use function App\Helpers\formatCurrency;
 
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: "Conta",
+    type: "object",
+    required: ["saldo"],
+    properties: [
+        new OA\Property(
+            property:"conta_id",
+            title:"conta_id",
+            type:"integer"
+        ),
+        new OA\Property(
+            property:"saldo",
+            title:"saldo",
+            type:"number"
+        )
+    ]
+)]
 class ContaResource extends JsonResource
 {
     /**

@@ -11,12 +11,45 @@ use App\Models\TransacaoBancaria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use OpenApi\Attributes as OA;
 
 class TransacaoController extends Controller
 {
     /**
-     * Realiza a transação sobre determinada conta bancária.
+     * Realiza um transação entre duas contas bancárias.
      */
+    #[OA\Post(
+        path:"/transacao",
+        description:'Realizar a movimentação de saldos: subtrai do pagador 
+        (junto com a taxa) e adiciona ao receber (sem taxa).',
+        requestBody: new OA\RequestBody(
+            description:"Informações necessárias para realizar a movimentação de 
+            saldo entre as contas.",
+            required: true,
+            content:[
+                new OA\JsonContent(ref:TransacaoBancariaResource::class)
+            ]
+        ),
+        responses: [
+            new OA\Response(
+                response:201,
+                description:"Transação realizada com sucesso. Retorna os dados 
+                atualizados da conta do pagador.",
+                content: [
+                    new OA\JsonContent(ref:ContaResource::class)
+                ]
+            ),
+            new OA\Response(
+                response:400,
+                description:"Informações inválidas da transação."
+            ),
+            new OA\Response(
+                response:404,
+                description:"A conta do recebedor e/ou do pagador não foi encontrada
+                ou o saldo do pagador é insuficiente para realizar a transação."
+            )
+        ]
+    )]
     public function transacao(Request $req) {
         $dados = $req->input();
 
@@ -80,6 +113,38 @@ class TransacaoController extends Controller
         return response(new ContaResource($pagador), Response::HTTP_CREATED);
     }
 
+    /**
+     * Lista todas as transações de determinada conta.
+     */
+    #[OA\Get(
+        path:"/transacao/{contaId}",
+        description:'Retorna uma lista com todas as transações de determinada conta.',
+        parameters: [
+            new OA\Parameter(
+                parameter:"contaId",
+                name:"contaId", 
+                in:"path", 
+                required: true,
+                description:"ID da conta",
+                schema: new OA\Schema(
+                    type:"integer"
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response:200,
+                description:"Uma listagem de todas contas ativas.",
+                content: [
+                    new OA\JsonContent(ref:TransacaoBancariaResource::class)
+                ]
+            ),
+            new OA\Response(
+                response:404,
+                description:"A conta requisitada não existe ou foi desativada."
+            )
+        ]
+    )]
     public function listarTransacoes(int $contaId) {
         
         $conta = Conta::find($contaId);
