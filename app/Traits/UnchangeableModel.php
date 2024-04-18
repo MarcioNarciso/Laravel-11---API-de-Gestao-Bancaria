@@ -4,11 +4,6 @@ namespace App\Traits;
 
 trait UnchangeableModel
 {
-    public static function create(array $attributes = [])
-    {
-        (new static())->previnir(__FUNCTION__);
-    }
-
     /**
      * Salva a model no banco de dados.
      * Se ela já existir no banco, não é atualizada.
@@ -31,10 +26,14 @@ trait UnchangeableModel
             return false;
         }
 
+        if ($this->exists) {
+            $this->previnir(__FUNCTION__);
+        }
+
         // If the model is brand new, we'll insert it into our database and set the
         // ID attribute on the model to the value of the newly inserted row's ID
         // which is typically an auto-increment value managed by the database.
-        if (! $this->exists) {
+        else {
             $saved = $this->performInsert($query);
 
             if (! $this->getConnectionName() &&
@@ -60,6 +59,7 @@ trait UnchangeableModel
 
     private function previnir(string $nomeDoMetodo): never
     {
-        throw new \BadMethodCallException("A operação '{$nomeDoMetodo}' não é permitida. ".static::class." é uma model imutável.");
+        throw new \BadMethodCallException("A operação '{$nomeDoMetodo}' não é permitida. "
+                                            .static::class." é uma model imutável, só pode ser persistida uma vez.");
     }
 }

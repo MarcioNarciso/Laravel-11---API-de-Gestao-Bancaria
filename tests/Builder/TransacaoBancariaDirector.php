@@ -13,7 +13,7 @@ class TransacaoBancariaDirector
     ) 
     {}
 
-    public function buildTransacao(FormaPagamento $formaPagamento, 
+    public function buildTransacao(FormaPagamento $formaPagamento = FormaPagamento::PIX, 
                                    float $valorDaTransacao = 10.0) : TransacaoBancaria
     {
         $this->builder
