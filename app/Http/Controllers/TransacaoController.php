@@ -20,6 +20,7 @@ class TransacaoController extends Controller
      */
     #[OA\Post(
         path:"/transacao",
+        tags:["Transação"],
         description:'Realizar a movimentação de saldos: subtrai do pagador 
         (junto com a taxa) e adiciona ao receber (sem taxa).',
         requestBody: new OA\RequestBody(
@@ -118,6 +119,7 @@ class TransacaoController extends Controller
      */
     #[OA\Get(
         path:"/transacao/{contaId}",
+        tags:["Transação"],
         description:'Retorna uma lista com todas as transações de determinada conta.',
         parameters: [
             new OA\Parameter(

@@ -7,6 +7,9 @@
     "paths": {
         "/conta": {
             "get": {
+                "tags": [
+                    "Conta"
+                ],
                 "summary": "Endpoint para consultar contas.",
                 "description": "Retorna informações da conta específicada pelo parâmetro \n        \"id\" na query string ou, se o ID for omitido, retorna uma listagem de \n        todas as contas cadastradas",
                 "operationId": "480e5be39c15bbb4621aeeec6d84a985",
@@ -38,6 +41,9 @@
                 }
             },
             "post": {
+                "tags": [
+                    "Conta"
+                ],
                 "summary": "Armazena a nova conta no banco de dados.",
                 "description": "Cadastra uma nova conta para transações futuras.",
                 "operationId": "420c9cfc292b183cf2260e3472afed2f",
@@ -86,6 +92,9 @@
         },
         "/conta/{id}": {
             "delete": {
+                "tags": [
+                    "Conta"
+                ],
                 "summary": "Desativa determinada conta pelo ID.",
                 "operationId": "0ed503be786e053255203c165e44973b",
                 "parameters": [
@@ -112,6 +121,9 @@
         },
         "/transacao": {
             "post": {
+                "tags": [
+                    "Transação"
+                ],
                 "summary": "Realiza um transação entre duas contas bancárias.",
                 "description": "Realizar a movimentação de saldos: subtrai do pagador \n        (junto com a taxa) e adiciona ao receber (sem taxa).",
                 "operationId": "fda6c4053a2c26bf80a1226ae340e8ac",
@@ -148,6 +160,9 @@
         },
         "/transacao/{contaId}": {
             "get": {
+                "tags": [
+                    "Transação"
+                ],
                 "summary": "Lista todas as transações de determinada conta.",
                 "description": "Retorna uma lista com todas as transações de determinada conta.",
                 "operationId": "35d1bab894d14e5143f4e50bba991911",

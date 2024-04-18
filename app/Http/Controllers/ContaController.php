@@ -16,6 +16,7 @@ class ContaController extends Controller
      */
     #[OA\Get(
         path:"/conta",
+        tags:["Conta"],
         description:'Retorna informações da conta específicada pelo parâmetro 
         "id" na query string ou, se o ID for omitido, retorna uma listagem de 
         todas as contas cadastradas',
@@ -80,6 +81,7 @@ class ContaController extends Controller
      */
     #[OA\Post(
         path:"/conta",
+        tags:["Conta"],
         description:'Cadastra uma nova conta para transações futuras.',
         requestBody: new OA\RequestBody(
             description:"Informações sobre a conta no formato JSON. 'conta_id' 
@@ -164,6 +166,7 @@ class ContaController extends Controller
      */
     #[OA\Delete(
         path:"/conta/{id}",
+        tags:["Conta"],
         parameters: [
             new OA\Parameter(
                 parameter:"id",
