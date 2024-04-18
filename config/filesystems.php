@@ -71,6 +71,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('docs') => storage_path('api-docs') // Permite o acesso ao arquivo .json criado pelo Swagger
     ],
 
 ];
