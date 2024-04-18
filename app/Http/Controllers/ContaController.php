@@ -11,7 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 class ContaController extends Controller
 {
     /**
-     * Retorna informações da conta específicada pelo parâmetro "id" na query string.
+     * Retorna informações da conta específicada pelo parâmetro "id" na query 
+     * string ou, se o ID não for fornecido, retorna uma listagem de todas
+     * as contas cadastradas.
      */
     public function index(Request $request)
     {
@@ -24,11 +26,16 @@ class ContaController extends Controller
             return response(ContaResource::collection(Conta::all()));
         }
 
-        $conta = Conta::find($contaId);
+        return $this->show($contaId);
+    }
 
-        /**
-         * Se a conta requisitada não existir, é retornado o HTTP STATUS 404.
-         */
+    /**
+     * Busca determinada conta pelo ID e retorna para o cliente.
+     */
+    private function show(int $id)
+    {
+        $conta = Conta::find($id);
+
         if (empty($conta)) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
@@ -55,24 +62,18 @@ class ContaController extends Controller
             'valor' => 'required|numeric|min:0'
         ]);
 
-        /**
-         * Caso as informações da conta não sejam válidas, retorna o HTTP STATUS 400.
-         */
         if ($validator->fails()) {
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
         /**
-         * Verifica se já existe uma conta com o ID já cadastrada.
+         * Verifica se já existe uma conta já cadastrada com o mesmo ID.
          */
         if (! empty($conta['conta_id'])) {
-            
             $contaExistente = Conta::find($conta['conta_id']);
+            $hasContaExistente = ! empty($contaExistente);
     
-            if (! empty($contaExistente)) {
-                /**
-                 * Se a conta já existir, retorna o HTTP STATUS 409 para o cliente.
-                 */
+            if ($hasContaExistente) {
                 return response(status: Response::HTTP_CONFLICT);
             }
         }
@@ -83,9 +84,6 @@ class ContaController extends Controller
             'saldo' => $conta['valor']
         ]);
 
-        /**
-         * Retorna a nova conta com o HTTP STATUS 201.
-         */
         return response(new ContaResource($conta), Response::HTTP_CREATED);
     }
 

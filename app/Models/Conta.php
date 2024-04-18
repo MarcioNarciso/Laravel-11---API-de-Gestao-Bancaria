@@ -27,10 +27,6 @@ class Conta extends Model
     {
         $isContaComSaldoSuficiente = $this->saldo >= $valor;
     
-        /**
-         * Se a conta não tiver saldo suficiente para concluir a transação,
-         * é lançada uma exceção.
-         */
         if (! $isContaComSaldoSuficiente) {
             throw new ContaComSaldoInsuficienteException("A conta pagadora '{$this->id}' não tem saldo suficiente para completar a transação.");
         }

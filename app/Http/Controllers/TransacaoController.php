@@ -31,9 +31,6 @@ class TransacaoController extends Controller
             'valor' => 'required|numeric|min:1'
         ]);
 
-        /**
-         * Caso as informações da transferência não sejam válidas, retorna o HTTP STATUS 400.
-         */
         if ($validator->fails()) {
             return response(status: Response::HTTP_BAD_REQUEST);
         }
@@ -51,7 +48,7 @@ class TransacaoController extends Controller
         $recebedor = Conta::find($dados['recebedor_id']);
 
         /**
-         * Caso a conta pagadora ou recebedora informada não existam, 
+         * Caso a conta pagadora e/ou recebedora informada não exista, 
          * retorna o HTTP STATUS 404 para o cliente.
          */
         if (empty($pagador) || empty($recebedor)) {
@@ -91,9 +88,7 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
-        $transacoesDaConta = TransacaoBancaria::where('pagador_id', $contaId)
-                                                ->orWhere('recebedor_id', $contaId)
-                                                ->get();
+        $transacoesDaConta = TransacaoBancaria::getTransacoesDaConta($conta);
 
         return response(TransacaoBancariaResource::collection($transacoesDaConta));
     }

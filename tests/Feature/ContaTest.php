@@ -56,7 +56,7 @@ class ContaTest extends TestCase
                             $transacao->recebedor->saldo);
     }
 
-    public function test_deve_efetuar_pagamento_via_pix(): void
+    public function test_deve_efetuar_transferencia_via_pix(): void
     {
         // Arrange
         $valorTransacao = 10.0;

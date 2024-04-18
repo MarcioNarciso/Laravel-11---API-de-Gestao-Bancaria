@@ -32,4 +32,11 @@ class TransacaoBancaria extends Model
     {
         return $this->belongsTo(Conta::class, 'recebedor_id');
     }
+
+    public static function getTransacoesDaConta(Conta $conta)
+    {
+        return TransacaoBancaria::where('pagador_id', $conta->id)
+                                ->orWhere('recebedor_id', $conta->id)
+                                ->get();
+    }
 }
