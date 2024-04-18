@@ -80,7 +80,7 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        return response(new ContaResource($recebedor), Response::HTTP_CREATED);
+        return response(new ContaResource($pagador), Response::HTTP_CREATED);
     }
 
     public function listarTransacoes(int $contaId) {
