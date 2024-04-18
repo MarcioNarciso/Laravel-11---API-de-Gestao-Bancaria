@@ -98,4 +98,20 @@ class ContaTest extends TestCase
         // Act
         Conta::realizarTransacao($transacao);
     }
+
+    public function test_ao_lancar_excecao_os_saldos_das_contas_devem_ficar_inalterados() : void
+    {
+        // Arrange
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::CREDITO, 100.0);
+
+        // Act
+        try {
+            Conta::realizarTransacao($transacao);
+        } catch (ContaComSaldoInsuficienteException) {
+        }
+
+        // Assert
+        $this->assertEquals(100, $transacao->pagador->saldo);
+        $this->assertEquals(100, $transacao->recebedor->saldo);
+    }
 }
