@@ -8,6 +8,7 @@ use App\Http\Resources\ContaResource;
 use App\Http\Resources\TransacaoBancariaResource;
 use App\Models\Conta;
 use App\Models\TransacaoBancaria;
+use App\Services\TransacaoBancariaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,10 @@ use OpenApi\Attributes as OA;
 
 class TransacaoController extends Controller
 {
+    public function __construct(
+        private TransacaoBancariaService $transacaoService
+    ){}
+
     /**
      * Realiza um transação entre duas contas bancárias.
      */
@@ -99,7 +104,7 @@ class TransacaoController extends Controller
 
         try {
 
-            Conta::realizarTransacao($transacao);
+            $this->transacaoService->realizarTransacao($transacao);
 
         } catch (ContaComSaldoInsuficienteException $e) {
             return response(status: Response::HTTP_NOT_FOUND);

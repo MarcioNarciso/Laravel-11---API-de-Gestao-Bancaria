@@ -24,7 +24,7 @@ class RegraCalculoTaxaFactory
      * @return \App\Models\RegrasCalculoTaxas\RegraCalculoTaxa
      * @throws \App\Exceptions\RegraCalculoTaxaInexistenteException
      */
-    public static function make(FormaPagamento $formaPagamento) : RegraCalculoTaxa
+    public function make(FormaPagamento $formaPagamento) : RegraCalculoTaxa
     {
         /**
          * Obtém a classe que deve ser instanciada com base na forma de pagamento.
