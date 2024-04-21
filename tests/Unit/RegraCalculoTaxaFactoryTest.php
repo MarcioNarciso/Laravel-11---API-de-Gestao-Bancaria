@@ -11,7 +11,7 @@ class RegraCalculoTaxaFactoryTest extends TestCase
 {
     public function test_deve_instanciar_regra_de_calculo_de_taxa_existente(): void
     {
-        $regraDeCalculo = RegraCalculoTaxaFactory::make(FormaPagamento::PIX);
+        $regraDeCalculo = (new RegraCalculoTaxaFactory())->make(FormaPagamento::PIX);
 
         $this->assertInstanceOf(TaxaDoPix::class, $regraDeCalculo);
     }

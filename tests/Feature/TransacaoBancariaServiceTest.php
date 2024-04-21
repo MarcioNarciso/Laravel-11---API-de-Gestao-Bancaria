@@ -3,25 +3,27 @@
 namespace Tests\Feature;
 
 use App\Enums\FormaPagamento;
-use App\Models\Conta;
 use App\Exceptions\ContaComSaldoInsuficienteException;
+use App\Services\TransacaoBancariaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Builder\TransacaoBancariaBuilder;
 use Tests\Builder\TransacaoBancariaDirector;
 use Tests\TestCase;
 
 
-class ContaTest extends TestCase
+class TransacaoBancariaServiceTest extends TestCase
 {
     use RefreshDatabase;
 
     private TransacaoBancariaDirector $transacaoBancariaDirector;
+    private TransacaoBancariaService $service;
 
     #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
         $this->transacaoBancariaDirector = new TransacaoBancariaDirector(new TransacaoBancariaBuilder());
+        $this->service = $this->app->make(TransacaoBancariaService::class);
     }
 
     public function test_deve_efetuar_pagamento_via_cartao_de_debito(): void
@@ -31,7 +33,7 @@ class ContaTest extends TestCase
         $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::DEBITO);
 
         // Act
-        Conta::realizarTransacao($transacao);
+        $this->service->realizarTransacao($transacao);
 
         // Assert
         $this->assertEquals((100 - ($valorTransacao + ($valorTransacao * 0.03))), 
@@ -47,7 +49,7 @@ class ContaTest extends TestCase
         $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::CREDITO);
 
         // Act
-        Conta::realizarTransacao($transacao);
+        $this->service->realizarTransacao($transacao);
 
         // Assert
         $this->assertEquals((100 - ($valorTransacao + ($valorTransacao * 0.05))), 
@@ -63,7 +65,7 @@ class ContaTest extends TestCase
         $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::PIX);
 
         // Act
-        Conta::realizarTransacao($transacao);
+        $this->service->realizarTransacao($transacao);
 
         // Assert
         $this->assertEquals((100 - ($valorTransacao + ($valorTransacao * 0.0))), 
@@ -80,7 +82,7 @@ class ContaTest extends TestCase
                                                                       $valorTransacao);
 
         // Act
-        Conta::realizarTransacao($transacao);
+        $this->service->realizarTransacao($transacao);
 
         // Assert
         $this->assertEquals(0, $transacao->pagador->saldo);
@@ -96,7 +98,7 @@ class ContaTest extends TestCase
         $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::CREDITO, 1000.0);
 
         // Act
-        Conta::realizarTransacao($transacao);
+        $this->service->realizarTransacao($transacao);
     }
 
     public function test_ao_lancar_excecao_os_saldos_das_contas_devem_ficar_inalterados() : void
@@ -106,7 +108,7 @@ class ContaTest extends TestCase
 
         // Act
         try {
-            Conta::realizarTransacao($transacao);
+            $this->service->realizarTransacao($transacao);
         } catch (ContaComSaldoInsuficienteException) {
         }
 
