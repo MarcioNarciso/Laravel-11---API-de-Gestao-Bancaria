@@ -2,8 +2,8 @@
 
 namespace Tests\Builder;
 use App\Enums\FormaPagamento;
-use App\Models\Conta;
-use App\Models\TransacaoBancaria;
+use App\Models\Account;
+use App\Models\BankTransaction;
 
 /**
  * Um Test Data Builder para facilitar a instanciação da TransacaoBancaria nos
@@ -11,11 +11,11 @@ use App\Models\TransacaoBancaria;
  */
 class TransacaoBancariaBuilder
 {
-    private TransacaoBancaria $transacaoBancaria;
+    private BankTransaction $transacaoBancaria;
 
     public function __construct(FormaPagamento $formaPagamento = null, float $valorTransacao = 0)
     {
-        $this->transacaoBancaria = new TransacaoBancaria([
+        $this->transacaoBancaria = new BankTransaction([
             'forma_pagamento' => $formaPagamento, 
             'valor' => $valorTransacao
         ]);
@@ -33,19 +33,19 @@ class TransacaoBancariaBuilder
         return $this;
     }
 
-    public function setPagador(Conta $pagador) : self 
+    public function setPagador(Account $pagador) : self 
     {
         $this->transacaoBancaria->pagador()->associate($pagador);
         return $this;
     }
 
-    public function setRecebedor(Conta $recebedor) : self 
+    public function setRecebedor(Account $recebedor) : self 
     {
         $this->transacaoBancaria->recebedor()->associate($recebedor);
         return $this;
     }
 
-    public function build() : TransacaoBancaria
+    public function build() : BankTransaction
     {
         return $this->transacaoBancaria;
     }

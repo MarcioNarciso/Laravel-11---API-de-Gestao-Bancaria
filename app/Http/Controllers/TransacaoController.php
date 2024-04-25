@@ -6,8 +6,8 @@ use App\Enums\FormaPagamento;
 use App\Exceptions\ContaComSaldoInsuficienteException;
 use App\Http\Resources\ContaResource;
 use App\Http\Resources\TransacaoBancariaResource;
-use App\Models\Conta;
-use App\Models\TransacaoBancaria;
+use App\Models\Account;
+use App\Models\BankTransaction;
 use App\Services\TransacaoBancariaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -90,8 +90,8 @@ class TransacaoController extends Controller
          * Caso a conta pagadora e/ou recebedora informada não exista, 
          * retorna o HTTP STATUS 404 para o cliente.
          */
-        $pagador = Conta::find($dados['pagadorId']);
-        $recebedor = Conta::find($dados['recebedorId']);
+        $pagador = Account::find($dados['pagadorId']);
+        $recebedor = Account::find($dados['recebedorId']);
 
         if (empty($pagador) || empty($recebedor)) {
             return response(status: Response::HTTP_NOT_FOUND);
@@ -100,7 +100,7 @@ class TransacaoController extends Controller
         /**
          * Instancia a transação.
          */
-        $transacao = new TransacaoBancaria([
+        $transacao = new BankTransaction([
             'formaPagamento' => $formaDeParamento, 
             'valor' => $dados['valor']
         ]);
@@ -158,8 +158,8 @@ class TransacaoController extends Controller
             )
         ]
     )]
-    public function listarTransacoes(Conta $conta) {
-        $transacoesDaConta = TransacaoBancaria::getTransacoesDaConta($conta);
+    public function listarTransacoes(Account $conta) {
+        $transacoesDaConta = BankTransaction::getTransacoesDaConta($conta);
 
         return response(TransacaoBancariaResource::collection($transacoesDaConta));
     }

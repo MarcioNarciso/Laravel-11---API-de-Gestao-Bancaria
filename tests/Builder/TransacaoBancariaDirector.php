@@ -2,8 +2,8 @@
 
 namespace Tests\Builder;
 use App\Enums\FormaPagamento;
-use App\Models\Conta;
-use App\Models\TransacaoBancaria;
+use App\Models\Account;
+use App\Models\BankTransaction;
 
 
 class TransacaoBancariaDirector
@@ -14,13 +14,13 @@ class TransacaoBancariaDirector
     {}
 
     public function buildTransacao(FormaPagamento $formaPagamento = FormaPagamento::PIX, 
-                                   float $valorDaTransacao = 10.0) : TransacaoBancaria
+                                   float $valorDaTransacao = 10.0) : BankTransaction
     {
         $this->builder
                 ->setFormaPagamento($formaPagamento)
                 ->setValorTransacao($valorDaTransacao)
-                ->setPagador(new Conta(['id' => 1, 'saldo' => 100]))
-                ->setRecebedor(new Conta(['id' => 2, 'saldo' => 100]));
+                ->setPagador(new Account(['id' => 1, 'saldo' => 100]))
+                ->setRecebedor(new Account(['id' => 2, 'saldo' => 100]));
 
         return $this->builder->build();
     }

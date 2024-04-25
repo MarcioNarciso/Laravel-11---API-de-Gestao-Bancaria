@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\TransacaoBancaria;
+use App\Models\BankTransaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Builder\TransacaoBancariaBuilder;
@@ -29,7 +29,7 @@ class TransacaoBancariaTest extends TestCase
 
         // Act
         $transacaoBancaria->save();
-        $transacaoPersistida = TransacaoBancaria::find($transacaoBancaria->id);
+        $transacaoPersistida = BankTransaction::find($transacaoBancaria->id);
 
         // Assert
         $this->assertNotEmpty($transacaoPersistida);
@@ -47,7 +47,7 @@ class TransacaoBancariaTest extends TestCase
         // Act
         $transacaoBancaria->save();
 
-        $transacaoPersistida = TransacaoBancaria::find($transacaoBancaria->id);
+        $transacaoPersistida = BankTransaction::find($transacaoBancaria->id);
 
         $transacaoPersistida->valor = 9999;
         $transacaoPersistida->save();

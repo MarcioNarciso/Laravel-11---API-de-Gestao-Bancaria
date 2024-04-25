@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TransacaoBancaria extends BaseModel
+class BankTransaction extends BaseModel
 {
     use SoftDeletes;
     use UnchangeableModel;
@@ -20,30 +20,30 @@ class TransacaoBancaria extends BaseModel
     const UPDATED_AT = 'updatedAt';
     const DELETED_AT = 'deletedAt';
 
-    protected $table = 'transacoes_bancarias';
+    protected $table = 'bank_transactions';
 
     protected $fillable = [
-        'formaPagamento', 'valor'
+        'methodPayment', 'valor'
     ];
 
     protected $casts = [
-        'formaPagamento' => FormaPagamento::class
+        'methodPayment' => FormaPagamento::class
     ];
 
-    public function pagador() : BelongsTo
+    public function payer() : BelongsTo
     {
-        return $this->belongsTo(Conta::class, 'pagadorId');
+        return $this->belongsTo(Account::class, 'payerId');
     }
 
-    public function recebedor() : BelongsTo
+    public function receiver() : BelongsTo
     {
-        return $this->belongsTo(Conta::class, 'recebedorId');
+        return $this->belongsTo(Account::class, 'receiverId');
     }
 
-    public static function getTransacoesDaConta(Conta $conta)
+    public static function getTransacoesDaConta(Account $account)
     {
-        return TransacaoBancaria::where('pagadorId', $conta->id)
-                                ->orWhere('recebedorId', $conta->id)
+        return BankTransaction::where('payerId', $account->id)
+                                ->orWhere('receiverId', $account->id)
                                 ->get();
     }
 }

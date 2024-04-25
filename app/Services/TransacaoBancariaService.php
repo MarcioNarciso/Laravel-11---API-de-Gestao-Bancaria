@@ -2,7 +2,7 @@
 
 namespace App\Services;
 use App\Factories\RegraCalculoTaxaFactory;
-use App\Models\TransacaoBancaria;
+use App\Models\BankTransaction;
 use Illuminate\Support\Facades\DB;
 
 class TransacaoBancariaService
@@ -19,11 +19,11 @@ class TransacaoBancariaService
      * Realiza a transação bancária na conta em questão.
      * Se não for possível realizar a transação, uma exceção é lançada.
      * 
-     * @param TransacaoBancaria $transacaoBancaria  Define o tipo de forma de pagamento, o valor transacionado e as contas.
+     * @param BankTransaction $transacaoBancaria  Define o tipo de forma de pagamento, o valor transacionado e as contas.
      * @throws \App\Exceptions\ContaComSaldoInsuficienteException
      * @throws \App\Exceptions\RegraCalculoTaxaInexistenteException
      */
-    public function realizarTransacao(TransacaoBancaria $transacaoBancaria) : void
+    public function realizarTransacao(BankTransaction $transacaoBancaria) : void
     {
         DB::transaction(function () use ($transacaoBancaria) {
 

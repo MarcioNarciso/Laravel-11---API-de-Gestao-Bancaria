@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ContaResource;
-use App\Models\Conta;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +30,7 @@ class AccountController extends Controller
     )]
     public function index(Request $request)
     {
-        $contasPaginadas = Conta::paginate(5);
+        $contasPaginadas = Account::paginate(5);
         return ContaResource::collection($contasPaginadas);
     }
 
@@ -67,7 +67,7 @@ class AccountController extends Controller
             )
         ]
     )]
-    public function show(Conta $conta)
+    public function show(Account $conta)
     {
         /**
          * A conta existe e ela é retornada para o cliente.
@@ -126,7 +126,7 @@ class AccountController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        $conta = Conta::create([
+        $conta = Account::create([
             'saldo' => $conta['valor']
         ]);
 
@@ -162,7 +162,7 @@ class AccountController extends Controller
             )
         ]
     )]
-    public function destroy(Conta $conta)
+    public function destroy(Account $conta)
     {
         $conta->delete();
 

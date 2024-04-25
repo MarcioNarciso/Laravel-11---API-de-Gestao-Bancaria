@@ -20,6 +20,9 @@ class RegraCalculoTaxaFactory
 
     /**
      * Instancia a classe da regra de cálculo da taxa com base na forma de pagamento.
+     * 
+     * Se a forma de pagamento não tiver uma regra definida, é lançada uma exceção.
+     * 
      * @param FormaPagamento $formaPagamento
      * @return \App\Models\RegrasCalculoTaxas\RegraCalculoTaxa
      * @throws \App\Exceptions\RegraCalculoTaxaInexistenteException
