@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
-use App\Factories\RegraCalculoTaxaFactory;
-use App\Services\TransacaoBancariaService;
+use App\Factories\FeeCalculationRuleFactory;
+use App\Services\BankTransactionService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     public $singletons = [
-        TransacaoBancariaService::class => TransacaoBancariaService::class,
-        RegraCalculoTaxaFactory::class => RegraCalculoTaxaFactory::class
+        BankTransactionService::class => BankTransactionService::class,
+        FeeCalculationRuleFactory::class => FeeCalculationRuleFactory::class
     ];
 
     /**

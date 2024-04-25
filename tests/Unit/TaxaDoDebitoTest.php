@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\RegrasCalculoTaxas\TaxaDoDebito;
+use App\Models\RegrasCalculoTaxas\DebitFee;
 use PHPUnit\Framework\TestCase;
 
 class TaxaDoDebitoTest extends TestCase
@@ -12,7 +12,7 @@ class TaxaDoDebitoTest extends TestCase
     {
         $valorDaTransacao = 100;
 
-        $valorDaTaxaDaTransacao = (new TaxaDoDebito())->calcularValorTaxa($valorDaTransacao);
+        $valorDaTaxaDaTransacao = (new DebitFee())->calculate($valorDaTransacao);
 
         $this->assertEquals(($valorDaTransacao * (3 / 100)), $valorDaTaxaDaTransacao);
     }
@@ -21,7 +21,7 @@ class TaxaDoDebitoTest extends TestCase
     {
         $valorDaTransacao = -100;
 
-        $valorDaTaxaDaTransacao = (new TaxaDoDebito())->calcularValorTaxa($valorDaTransacao);
+        $valorDaTaxaDaTransacao = (new DebitFee())->calculate($valorDaTransacao);
 
         $this->assertEquals((100 * (3 / 100)), $valorDaTaxaDaTransacao);
     }

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Enums\FormaPagamento;
+use App\Enums\PaymentMethod;
 use App\Exceptions\ContaComSaldoInsuficienteException;
-use App\Services\TransacaoBancariaService;
+use App\Services\BankTransactionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Builder\TransacaoBancariaBuilder;
 use Tests\Builder\TransacaoBancariaDirector;
@@ -16,24 +16,24 @@ class TransacaoBancariaServiceTest extends TestCase
     use RefreshDatabase;
 
     private TransacaoBancariaDirector $transacaoBancariaDirector;
-    private TransacaoBancariaService $service;
+    private BankTransactionService $service;
 
     #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
         $this->transacaoBancariaDirector = new TransacaoBancariaDirector(new TransacaoBancariaBuilder());
-        $this->service = $this->app->make(TransacaoBancariaService::class);
+        $this->service = $this->app->make(BankTransactionService::class);
     }
 
     public function test_deve_efetuar_pagamento_via_cartao_de_debito(): void
     {
         // Arrange
         $valorTransacao = 10.0;
-        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::DEBITO);
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(PaymentMethod::DEBIT);
 
         // Act
-        $this->service->realizarTransacao($transacao);
+        $this->service->execute($transacao);
 
         // Assert
         $this->assertEquals((100 - ($valorTransacao + ($valorTransacao * 0.03))), 
@@ -46,10 +46,10 @@ class TransacaoBancariaServiceTest extends TestCase
     {
         // Arrange
         $valorTransacao = 10.0;
-        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::CREDITO);
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(PaymentMethod::CREDIT);
 
         // Act
-        $this->service->realizarTransacao($transacao);
+        $this->service->execute($transacao);
 
         // Assert
         $this->assertEquals((100 - ($valorTransacao + ($valorTransacao * 0.05))), 
@@ -62,10 +62,10 @@ class TransacaoBancariaServiceTest extends TestCase
     {
         // Arrange
         $valorTransacao = 10.0;
-        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::PIX);
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(PaymentMethod::PIX);
 
         // Act
-        $this->service->realizarTransacao($transacao);
+        $this->service->execute($transacao);
 
         // Assert
         $this->assertEquals((100 - ($valorTransacao + ($valorTransacao * 0.0))), 
@@ -78,11 +78,11 @@ class TransacaoBancariaServiceTest extends TestCase
     {
         // Arrange
         $valorTransacao = 100.0;
-        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::PIX, 
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(PaymentMethod::PIX, 
                                                                       $valorTransacao);
 
         // Act
-        $this->service->realizarTransacao($transacao);
+        $this->service->execute($transacao);
 
         // Assert
         $this->assertEquals(0, $transacao->pagador->saldo);
@@ -95,20 +95,20 @@ class TransacaoBancariaServiceTest extends TestCase
         $this->expectException(ContaComSaldoInsuficienteException::class);
 
         // Arrange
-        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::CREDITO, 1000.0);
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(PaymentMethod::CREDIT, 1000.0);
 
         // Act
-        $this->service->realizarTransacao($transacao);
+        $this->service->execute($transacao);
     }
 
     public function test_ao_lancar_excecao_os_saldos_das_contas_devem_ficar_inalterados() : void
     {
         // Arrange
-        $transacao = $this->transacaoBancariaDirector->buildTransacao(FormaPagamento::CREDITO, 100.0);
+        $transacao = $this->transacaoBancariaDirector->buildTransacao(PaymentMethod::CREDIT, 100.0);
 
         // Act
         try {
-            $this->service->realizarTransacao($transacao);
+            $this->service->execute($transacao);
         } catch (ContaComSaldoInsuficienteException) {
         }
 

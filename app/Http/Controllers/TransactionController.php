@@ -2,33 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\FormaPagamento;
+use App\Enums\PaymentMethod;
+use App\Exceptions\AccountWithInsufficienteBalanceException;
 use App\Exceptions\ContaComSaldoInsuficienteException;
-use App\Http\Resources\ContaResource;
-use App\Http\Resources\TransacaoBancariaResource;
+use App\Exceptions\NonExistFeeCalculcationRuleException;
+use App\Http\Resources\AccountResource;
+use App\Http\Resources\BankTransactionResource;
 use App\Models\Account;
 use App\Models\BankTransaction;
-use App\Services\TransacaoBancariaService;
+use App\Services\BankTransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
-class TransacaoController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Injeta as dependências da controller pelo Service Container.
      */
     public function __construct(
-        private TransacaoBancariaService $transacaoService
+        private BankTransactionService $bankTransactionService
     ){}
 
     /**
      * Realiza um transação entre duas contas bancárias.
      */
     #[OA\Post(
-        path:"/transacao",
-        tags:["Transação"],
+        path:"/transactions",
+        tags:["Transações"],
         description:'Realizar a movimentação de saldos: subtrai do pagador 
         (junto com a taxa) e adiciona ao receber (sem taxa).',
         requestBody: new OA\RequestBody(
@@ -36,7 +38,7 @@ class TransacaoController extends Controller
             saldo entre as contas.",
             required: true,
             content:[
-                new OA\JsonContent(ref:TransacaoBancariaResource::class)
+                new OA\JsonContent(ref:BankTransactionResource::class)
             ]
         ),
         responses: [
@@ -45,7 +47,7 @@ class TransacaoController extends Controller
                 description:"Transação realizada com sucesso. Retorna os dados 
                 atualizados da conta do pagador.",
                 content: [
-                    new OA\JsonContent(ref:ContaResource::class)
+                    new OA\JsonContent(ref:AccountResource::class)
                 ]
             ),
             new OA\Response(
@@ -59,18 +61,18 @@ class TransacaoController extends Controller
             )
         ]
     )]
-    public function transacao(Request $req) {
-        $dados = $req->input();
+    public function transaction(Request $req) {
+        $data = $req->input();
 
         /**
          * Realiza a validação das informações da transação.
          * A forma de pagamento deve ser somente um caractere em maiúsculo.
          */
-        $validator = Validator::make($dados, [
-            'formaPagamento' => 'required|size:1|uppercase',
-            'pagadorId' => 'required|integer|min:1',
-            'recebedorId' => 'required|integer|min:1',
-            'valor' => 'required|numeric|min:1'
+        $validator = Validator::make($data, [
+            'paymentMethod' => 'required|size:1|uppercase',
+            'payerId' => 'required|min:1',
+            'receiverId' => 'required|min:1',
+            'value' => 'required|numeric|min:1'
         ]);
 
         if ($validator->fails()) {
@@ -80,9 +82,9 @@ class TransacaoController extends Controller
         /**
          * Caso a forma de pagamento fornecida seja inválida, retorna o HTTP STATUS 400.
          */
-        $formaDeParamento = FormaPagamento::tryFrom($dados['formaPagamento']);
+        $paymentMethod = PaymentMethod::tryFrom($data['paymentMethod']);
 
-        if (empty($formaDeParamento)) {
+        if (empty($paymentMethod)) {
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
@@ -90,31 +92,31 @@ class TransacaoController extends Controller
          * Caso a conta pagadora e/ou recebedora informada não exista, 
          * retorna o HTTP STATUS 404 para o cliente.
          */
-        $pagador = Account::find($dados['pagadorId']);
-        $recebedor = Account::find($dados['recebedorId']);
+        $payer = Account::find($data['payerId']);
+        $receiver = Account::find($data['receiverId']);
 
-        if (empty($pagador) || empty($recebedor)) {
+        if (empty($payer) || empty($receiver)) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
         /**
          * Instancia a transação.
          */
-        $transacao = new BankTransaction([
-            'formaPagamento' => $formaDeParamento, 
-            'valor' => $dados['valor']
+        $transaction = new BankTransaction([
+            'paymentMethod' => $paymentMethod, 
+            'value' => $data['value']
         ]);
 
-        $transacao->pagador()->associate($pagador);
-        $transacao->recebedor()->associate($recebedor);
+        $transaction->payer()->associate($payer);
+        $transaction->receiver()->associate($receiver);
 
         try {
 
-            $this->transacaoService->realizarTransacao($transacao);
+            $this->bankTransactionService->execute($transaction);
 
-        } catch (ContaComSaldoInsuficienteException $e) {
+        } catch (AccountWithInsufficienteBalanceException $e) {
             return response(status: Response::HTTP_NOT_FOUND);
-        } catch (RegraCalculoTaxaInexistenteException) {
+        } catch (NonExistFeeCalculcationRuleException) {
             /**
              * Caso a forma de pagamento fornecida seja inválida, retorna o HTTP STATUS 400.
              * Forma de pagamento sem classe de cálculo da taxa.
@@ -122,34 +124,34 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        return response(new ContaResource($pagador), Response::HTTP_CREATED);
+        return response(new AccountResource($payer), Response::HTTP_CREATED);
     }
 
     /**
      * Lista todas as transações de determinada conta.
      */
     #[OA\Get(
-        path:"/transacao/{contaId}",
-        tags:["Transação"],
+        path:"/transactions/{accountId}",
+        tags:["Transações"],
         description:'Retorna uma lista com todas as transações de determinada conta.',
         parameters: [
             new OA\Parameter(
-                parameter:"contaId",
-                name:"contaId", 
+                parameter:"accountId",
+                name:"accountId", 
                 in:"path", 
                 required: true,
                 description:"ID da conta",
                 schema: new OA\Schema(
-                    type:"integer"
+                    type:"string"
                 )
             ),
         ],
         responses: [
             new OA\Response(
                 response:200,
-                description:"Uma listagem de todas contas ativas.",
+                description:"Uma listagem de todas transações de uma conta.",
                 content: [
-                    new OA\JsonContent(ref:TransacaoBancariaResource::class)
+                    new OA\JsonContent(ref:BankTransactionResource::class)
                 ]
             ),
             new OA\Response(
@@ -158,9 +160,15 @@ class TransacaoController extends Controller
             )
         ]
     )]
-    public function listarTransacoes(Account $conta) {
-        $transacoesDaConta = BankTransaction::getTransacoesDaConta($conta);
+    public function listTransactions(string $accountId) {
+        $account = Account::find($accountId);
 
-        return response(TransacaoBancariaResource::collection($transacoesDaConta));
+        if (empty($account)) {
+            return response(status: Response::HTTP_NOT_FOUND);
+        }
+
+        $accountTransactions = BankTransaction::getAccountTransactions($account);
+
+        return response(BankTransactionResource::collection($accountTransactions));
     }
 }

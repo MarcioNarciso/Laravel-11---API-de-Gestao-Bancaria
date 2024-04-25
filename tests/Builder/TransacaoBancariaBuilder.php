@@ -1,7 +1,7 @@
 <?php
 
 namespace Tests\Builder;
-use App\Enums\FormaPagamento;
+use App\Enums\PaymentMethod;
 use App\Models\Account;
 use App\Models\BankTransaction;
 
@@ -13,7 +13,7 @@ class TransacaoBancariaBuilder
 {
     private BankTransaction $transacaoBancaria;
 
-    public function __construct(FormaPagamento $formaPagamento = null, float $valorTransacao = 0)
+    public function __construct(PaymentMethod $formaPagamento = null, float $valorTransacao = 0)
     {
         $this->transacaoBancaria = new BankTransaction([
             'forma_pagamento' => $formaPagamento, 
@@ -21,7 +21,7 @@ class TransacaoBancariaBuilder
         ]);
     }
 
-    public function setFormaPagamento(FormaPagamento $formaPagamento) : self
+    public function setFormaPagamento(PaymentMethod $formaPagamento) : self
     {
         $this->transacaoBancaria->forma_pagamento = $formaPagamento;
         return $this;

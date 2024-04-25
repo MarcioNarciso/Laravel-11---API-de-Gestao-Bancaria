@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\FormaPagamento;
+use App\Enums\PaymentMethod;
 use App\Traits\UnchangeableModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,11 +23,11 @@ class BankTransaction extends BaseModel
     protected $table = 'bank_transactions';
 
     protected $fillable = [
-        'methodPayment', 'valor'
+        'paymentMethod', 'value'
     ];
 
     protected $casts = [
-        'methodPayment' => FormaPagamento::class
+        'paymentMethod' => PaymentMethod::class
     ];
 
     public function payer() : BelongsTo
@@ -40,7 +40,7 @@ class BankTransaction extends BaseModel
         return $this->belongsTo(Account::class, 'receiverId');
     }
 
-    public static function getTransacoesDaConta(Account $account)
+    public static function getAccountTransactions(Account $account)
     {
         return BankTransaction::where('payerId', $account->id)
                                 ->orWhere('receiverId', $account->id)

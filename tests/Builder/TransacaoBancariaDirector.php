@@ -1,7 +1,7 @@
 <?php
 
 namespace Tests\Builder;
-use App\Enums\FormaPagamento;
+use App\Enums\PaymentMethod;
 use App\Models\Account;
 use App\Models\BankTransaction;
 
@@ -13,7 +13,7 @@ class TransacaoBancariaDirector
     ) 
     {}
 
-    public function buildTransacao(FormaPagamento $formaPagamento = FormaPagamento::PIX, 
+    public function buildTransacao(PaymentMethod $formaPagamento = PaymentMethod::PIX, 
                                    float $valorDaTransacao = 10.0) : BankTransaction
     {
         $this->builder

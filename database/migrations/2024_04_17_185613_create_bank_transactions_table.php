@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contas', function (Blueprint $table) {
+        Schema::create('bank_transactions', function (Blueprint $table) {
             $table->id();
-            $table->double('saldo');
-            $table->softDeletes('deletedAt');   
+            $table->bigInteger('receiverId');
+            $table->bigInteger('payerId');
+            $table->enum('paymentMethod', [
+                PaymentMethod::CREDIT->value, PaymentMethod::DEBIT->value,
+                PaymentMethod::PIX->value
+            ]);
+            $table->float('value');
+            $table->softDeletes('deletedAt');
             $table->timestamp('createdAt')->nullable();
             $table->timestamp('updatedAt')->nullable();
         });
@@ -25,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contas');
+        Schema::dropIfExists('bank_transactions');
     }
 };

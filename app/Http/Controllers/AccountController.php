@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ContaResource;
+use App\Http\Resources\AccountResource;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,22 +16,22 @@ class AccountController extends Controller
      */
     #[OA\Get(
         path:"/accounts",
-        tags:["Accounts"],
+        tags:["Contas"],
         description:'Retorna uma lista paginada de todas as contas cadastradas,',
         responses: [
             new OA\Response(
                 response:200,
                 description:"Lista todas contas ativas.",
                 content: [
-                    new OA\JsonContent(ref:ContaResource::class)
+                    new OA\JsonContent(ref:AccountResource::class)
                 ]
             )
         ]
     )]
     public function index(Request $request)
     {
-        $contasPaginadas = Account::paginate(5);
-        return ContaResource::collection($contasPaginadas);
+        $paginatedAccounts = Account::paginate(5);
+        return AccountResource::collection($paginatedAccounts);
     }
 
     /**
@@ -39,7 +39,7 @@ class AccountController extends Controller
      */
     #[OA\Get(
         path:"/accounts/{id}",
-        tags:["Accounts"],
+        tags:["Contas"],
         description:'Retorna informações da conta específicada pelo parâmetro 
         "id" no path.',
         parameters: [
@@ -49,7 +49,7 @@ class AccountController extends Controller
                 in:"path", 
                 description:"ID da conta",
                 schema: new OA\Schema(
-                    type:"integer"
+                    type:"string"
                 )
             ),
         ],
@@ -58,7 +58,7 @@ class AccountController extends Controller
                 response:200,
                 description:"Informações de determinada conta.",
                 content: [
-                    new OA\JsonContent(ref:ContaResource::class)
+                    new OA\JsonContent(ref:AccountResource::class)
                 ]
             ),
             new OA\Response(
@@ -67,31 +67,36 @@ class AccountController extends Controller
             )
         ]
     )]
-    public function show(Account $conta)
+    public function show(string $id)
     {
+        $account = Account::find($id);
+
+        if (empty($account)) {
+            return response(status: Response::HTTP_NOT_FOUND);
+        }
+
         /**
          * A conta existe e ela é retornada para o cliente.
          */
-        return response(new ContaResource($conta));
+        return response(new AccountResource($account));
     }
 
     /**
      * Armazena a nova conta no banco de dados.
      */
     #[OA\Post(
-        path:"/conta",
-        tags:["Conta"],
+        path:"/accounts",
+        tags:["Contas"],
         description:'Cadastra uma nova conta para transações futuras.',
         requestBody: new OA\RequestBody(
-            description:"Informações sobre a conta no formato JSON. 'valor' 
-            é o saldo inicial da conta.",
+            description:"'value' é o saldo inicial da conta. Deve ser um valor 
+            maior que zero.",
             required: true,
             content:[
                 new OA\JsonContent(properties: [
                     new OA\Property(
-                        property:"valor",
-                        title:"valor",
-                        description:"Saldo inicial da conta.",
+                        property:"value",
+                        title:"Saldo inicial da conta.",
                         type: "number"
                     )
                 ])
@@ -102,7 +107,7 @@ class AccountController extends Controller
                 response:201,
                 description:"Conta criada com sucesso.",
                 content: [
-                    new OA\JsonContent(ref:ContaResource::class)
+                    new OA\JsonContent(ref:AccountResource::class)
                 ]
             ),
             new OA\Response(
@@ -113,32 +118,34 @@ class AccountController extends Controller
     )]
     public function store(Request $request)
     {
-        $conta = $request->input();
+        $account = $request->input();
 
         /**
          * Realiza a validação das informações da nova conta.
+         * 
+         * A conta deve ter o saldo inicial positivo.
          */
-        $validator = Validator::make($conta, [
-            'valor' => 'required|numeric|min:0'
+        $validator = Validator::make($account, [
+            'value' => 'required|numeric|min:1'
         ]);
 
         if ($validator->fails()) {
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        $conta = Account::create([
-            'saldo' => $conta['valor']
+        $account = Account::create([
+            'balance' => $account['value']
         ]);
 
-        return response(new ContaResource($conta), Response::HTTP_CREATED);
+        return response(new AccountResource($account), Response::HTTP_CREATED);
     }
 
     /**
      * Desativa determinada conta pelo ID.
      */
     #[OA\Delete(
-        path:"/conta/{id}",
-        tags:["Conta"],
+        path:"/accounts/{id}",
+        tags:["Contas"],
         parameters: [
             new OA\Parameter(
                 parameter:"id",
@@ -147,7 +154,7 @@ class AccountController extends Controller
                 required: true,
                 description:"ID da conta",
                 schema: new OA\Schema(
-                    type:"integer"
+                    type:"string"
                 )
             ),
         ],
@@ -162,9 +169,15 @@ class AccountController extends Controller
             )
         ]
     )]
-    public function destroy(Account $conta)
+    public function destroy(string $id)
     {
-        $conta->delete();
+        $account = Account::find($id);
+
+        if (empty($account)) {
+            return response(status: Response::HTTP_NOT_FOUND);
+        }
+
+        $account->delete();
 
         return response(status: Response::HTTP_OK);
     }

@@ -27,7 +27,7 @@ trait UnchangeableModel
         }
 
         if ($this->exists) {
-            $this->previnir(__FUNCTION__);
+            $this->prevent(__FUNCTION__);
         }
 
         // If the model is brand new, we'll insert it into our database and set the
@@ -54,12 +54,12 @@ trait UnchangeableModel
 
     public function update(array $attributes = [], array $options = [])
     {
-        $this->previnir(__FUNCTION__);
+        $this->prevent(__FUNCTION__);
     }
 
-    private function previnir(string $nomeDoMetodo): never
+    private function prevent(string $methodName): never
     {
-        throw new \BadMethodCallException("A operação '{$nomeDoMetodo}' não é permitida. "
+        throw new \BadMethodCallException("A operação '{$methodName}' não é permitida. "
                                             .static::class." é uma model imutável, só pode ser persistida uma vez.");
     }
 }

@@ -5,63 +5,43 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/conta": {
+        "/accounts": {
             "get": {
                 "tags": [
-                    "Conta"
+                    "Contas"
                 ],
                 "summary": "Endpoint para consultar contas.",
-                "description": "Retorna informações da conta específicada pelo parâmetro \n        \"id\" na query string ou, se o ID for omitido, retorna uma listagem de \n        todas as contas cadastradas",
-                "operationId": "480e5be39c15bbb4621aeeec6d84a985",
-                "parameters": [
-                    {
-                        "parameter": "id",
-                        "name": "id",
-                        "in": "query",
-                        "description": "ID da conta",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "description": "Retorna uma lista paginada de todas as contas cadastradas,",
+                "operationId": "a5af6b64c5ff2ea0a75cec62e63a632e",
                 "responses": {
                     "200": {
-                        "description": "Informações de determinada conta ou uma listagem de todas contas ativas.",
+                        "description": "Lista todas contas ativas.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ContaResource"
+                                    "$ref": "#/components/schemas/AccountResource"
                                 }
                             }
                         }
-                    },
-                    "404": {
-                        "description": "Foi requisitada uma determinada conta, mas ela não existe ou está inativa."
                     }
                 }
             },
             "post": {
                 "tags": [
-                    "Conta"
+                    "Contas"
                 ],
                 "summary": "Armazena a nova conta no banco de dados.",
                 "description": "Cadastra uma nova conta para transações futuras.",
-                "operationId": "420c9cfc292b183cf2260e3472afed2f",
+                "operationId": "502f0663eeceed364480dc3665222a60",
                 "requestBody": {
-                    "description": "Informações sobre a conta no formato JSON. 'conta_id' \n            é opcional e, se for omitido, será geradado um ID automático. 'valor' \n            é o saldo inicial da conta.",
+                    "description": "'value' é o saldo inicial da conta. Deve ser um valor \n            maior que zero.",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "conta_id": {
-                                        "title": "conta_id",
-                                        "description": "ID da conta (opcional)",
-                                        "type": "integer"
-                                    },
-                                    "valor": {
-                                        "title": "valor",
-                                        "description": "Saldo inicial da conta.",
+                                    "value": {
+                                        "title": "Saldo inicial da conta.",
                                         "type": "number"
                                     }
                                 },
@@ -76,27 +56,58 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ContaResource"
+                                    "$ref": "#/components/schemas/AccountResource"
                                 }
                             }
                         }
                     },
                     "400": {
                         "description": "Informações inválidas da conta."
-                    },
-                    "409": {
-                        "description": "Já existe uma conta cadastrada com o mesmo ID."
                     }
                 }
             }
         },
-        "/conta/{id}": {
+        "/accounts/{id}": {
+            "get": {
+                "tags": [
+                    "Contas"
+                ],
+                "summary": "Busca determinada conta pelo ID e retorna para o cliente.",
+                "description": "Retorna informações da conta específicada pelo parâmetro \n        \"id\" no path.",
+                "operationId": "e6952cf57a3b1d885eb38d1f7929f5cc",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da conta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informações de determinada conta.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Foi requisitada uma determinada conta, mas ela não existe ou está inativa."
+                    }
+                }
+            },
             "delete": {
                 "tags": [
-                    "Conta"
+                    "Contas"
                 ],
                 "summary": "Desativa determinada conta pelo ID.",
-                "operationId": "0ed503be786e053255203c165e44973b",
+                "operationId": "05ff22e38b805a39dffeb038a88d2508",
                 "parameters": [
                     {
                         "parameter": "id",
@@ -105,7 +116,7 @@
                         "description": "ID da conta",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -119,21 +130,21 @@
                 }
             }
         },
-        "/transacao": {
+        "/transactions": {
             "post": {
                 "tags": [
-                    "Transação"
+                    "Transações"
                 ],
                 "summary": "Realiza um transação entre duas contas bancárias.",
                 "description": "Realizar a movimentação de saldos: subtrai do pagador \n        (junto com a taxa) e adiciona ao receber (sem taxa).",
-                "operationId": "fda6c4053a2c26bf80a1226ae340e8ac",
+                "operationId": "c78fc912fadbdd82cf985cb3bb8067f2",
                 "requestBody": {
                     "description": "Informações necessárias para realizar a movimentação de \n            saldo entre as contas.",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TransacaoBancariaResource"
+                                "$ref": "#/components/schemas/BankTransactionResource"
                             }
                         }
                     }
@@ -144,7 +155,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ContaResource"
+                                    "$ref": "#/components/schemas/AccountResource"
                                 }
                             }
                         }
@@ -158,33 +169,33 @@
                 }
             }
         },
-        "/transacao/{contaId}": {
+        "/transactions/{accountId}": {
             "get": {
                 "tags": [
-                    "Transação"
+                    "Transações"
                 ],
                 "summary": "Lista todas as transações de determinada conta.",
                 "description": "Retorna uma lista com todas as transações de determinada conta.",
-                "operationId": "35d1bab894d14e5143f4e50bba991911",
+                "operationId": "c82fa7c4e7d23d30012f894e69556bd9",
                 "parameters": [
                     {
-                        "parameter": "contaId",
-                        "name": "contaId",
+                        "parameter": "accountId",
+                        "name": "accountId",
                         "in": "path",
                         "description": "ID da conta",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Uma listagem de todas contas ativas.",
+                        "description": "Uma listagem de todas transações de uma conta.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TransacaoBancariaResource"
+                                    "$ref": "#/components/schemas/BankTransactionResource"
                                 }
                             }
                         }
@@ -198,47 +209,51 @@
     },
     "components": {
         "schemas": {
-            "ContaResource": {
-                "title": "Conta",
+            "AccountResource": {
+                "title": "Account",
                 "required": [
-                    "saldo"
+                    "balance"
                 ],
                 "properties": {
-                    "conta_id": {
-                        "title": "conta_id",
-                        "type": "integer"
+                    "accountId": {
+                        "title": "ID da conta",
+                        "type": "string"
                     },
-                    "saldo": {
-                        "title": "saldo",
+                    "balance": {
+                        "title": "Saldo da conta",
                         "type": "number"
+                    },
+                    "createdAt": {
+                        "title": "Data de criação da conta",
+                        "type": "string"
                     }
                 },
                 "type": "object"
             },
-            "TransacaoBancariaResource": {
-                "title": "Transação Bancária",
+            "BankTransactionResource": {
+                "title": "Bank Transaction",
                 "required": [
-                    "recebedor_id",
-                    "pagador_id",
-                    "forma_pagamento",
-                    "valor"
+                    "receiverId",
+                    "payerId",
+                    "paymentMethod",
+                    "value"
                 ],
                 "properties": {
-                    "recebedor_id": {
-                        "title": "recebedor_id",
-                        "type": "integer"
+                    "receiverId": {
+                        "title": "ID da conta do recebedor",
+                        "type": "string"
                     },
-                    "pagador_id": {
-                        "title": "pagador_id",
-                        "type": "integer"
+                    "payerId": {
+                        "title": "ID da conta do pagador",
+                        "type": "string"
                     },
-                    "forma_pagamento": {
-                        "title": "forma_pagamento",
+                    "paymentMethod": {
+                        "title": "Meio que o pagamento será realizado.",
                         "description": "Formas de pagamento aceitas: 'C' (Crédito), 'D' (Débito) e 'P' (Pix)",
                         "type": "string"
                     },
-                    "valor": {
-                        "title": "valor",
+                    "value": {
+                        "title": "Valor da transação",
                         "type": "number"
                     }
                 },

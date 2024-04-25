@@ -2,9 +2,9 @@
 
 namespace App\Helpers;
 
-if (! function_exists('formatar_dinheiro')) {
-    function formatCurrency($valor) : bool|string
+if (! function_exists('formatCurrency')) {
+    function formatCurrency($value) : bool|string
     {
-        return number_format($valor, 2, '.', '');
+        return number_format($value, 2, '.', '');
     }
 }

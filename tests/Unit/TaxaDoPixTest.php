@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\RegrasCalculoTaxas\TaxaDoPix;
+use App\Models\RegrasCalculoTaxas\PixFee;
 use PHPUnit\Framework\TestCase;
 
 class TaxaDoPixTest extends TestCase
@@ -11,7 +11,7 @@ class TaxaDoPixTest extends TestCase
     {
         $valorDaTransacao = 100;
 
-        $valorDaTaxaDaTransacao = (new TaxaDoPix())->calcularValorTaxa($valorDaTransacao);
+        $valorDaTaxaDaTransacao = (new PixFee())->calculate($valorDaTransacao);
 
         $this->assertEquals(($valorDaTransacao * 0.0), $valorDaTaxaDaTransacao);
     }
@@ -20,7 +20,7 @@ class TaxaDoPixTest extends TestCase
     {
         $valorDaTransacao = -100;
 
-        $valorDaTaxaDaTransacao = (new TaxaDoPix())->calcularValorTaxa($valorDaTransacao);
+        $valorDaTaxaDaTransacao = (new PixFee())->calculate($valorDaTransacao);
 
         $this->assertEquals(0, $valorDaTaxaDaTransacao);
     }

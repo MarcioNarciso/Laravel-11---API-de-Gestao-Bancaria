@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\RegrasCalculoTaxas\TaxaDoCredito;
+use App\Models\RegrasCalculoTaxas\CreditFee;
 use PHPUnit\Framework\TestCase;
 
 class TaxaDoCreditoTest extends TestCase
@@ -11,7 +11,7 @@ class TaxaDoCreditoTest extends TestCase
     {
         $valorDaTransacao = 100;
 
-        $valorDaTaxaDaTransacao = (new TaxaDoCredito())->calcularValorTaxa($valorDaTransacao);
+        $valorDaTaxaDaTransacao = (new CreditFee())->calculate($valorDaTransacao);
 
         $this->assertEquals(($valorDaTransacao * (5 / 100)), $valorDaTaxaDaTransacao);
     }
@@ -20,7 +20,7 @@ class TaxaDoCreditoTest extends TestCase
     {
         $valorDaTransacao = -100;
 
-        $valorDaTaxaDaTransacao = (new TaxaDoCredito())->calcularValorTaxa($valorDaTransacao);
+        $valorDaTaxaDaTransacao = (new CreditFee())->calculate($valorDaTransacao);
 
         $this->assertEquals(( 100 * 0.05), $valorDaTaxaDaTransacao);
     }

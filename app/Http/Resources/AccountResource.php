@@ -9,23 +9,28 @@ use function App\Helpers\formatCurrency;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    title: "Conta",
+    title: "Account",
     type: "object",
-    required: ["saldo"],
+    required: ["balance"],
     properties: [
         new OA\Property(
-            property:"contaId",
+            property:"accountId",
             title:"ID da conta",
-            type:"integer"
+            type:"string"
         ),
         new OA\Property(
-            property:"saldo",
+            property:"balance",
             title:"Saldo da conta",
             type:"number"
+        ),
+        new OA\Property(
+            property:"createdAt",
+            title:"Data de criação da conta",
+            type:"string"
         )
     ]
 )]
-class ContaResource extends JsonResource
+class AccountResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -35,9 +40,9 @@ class ContaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'contaId' => $this->id,
-            'saldo' => formatCurrency($this->saldo),
-            'criadaEm' => $this->createdAt
+            'accountId' => $this->id,
+            'balance' => formatCurrency($this->balance),
+            'createdAt' => $this->createdAt
         ];
     }
 }

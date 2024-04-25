@@ -2,17 +2,17 @@
 
 namespace Tests\Unit;
 
-use App\Enums\FormaPagamento;
-use App\Factories\RegraCalculoTaxaFactory;
-use App\Models\RegrasCalculoTaxas\TaxaDoPix;
+use App\Enums\PaymentMethod;
+use App\Factories\FeeCalculationRuleFactory;
+use App\Models\RegrasCalculoTaxas\PixFee;
 use PHPUnit\Framework\TestCase;
 
 class RegraCalculoTaxaFactoryTest extends TestCase
 {
     public function test_deve_instanciar_regra_de_calculo_de_taxa_existente(): void
     {
-        $regraDeCalculo = (new RegraCalculoTaxaFactory())->make(FormaPagamento::PIX);
+        $regraDeCalculo = (new FeeCalculationRuleFactory())->make(PaymentMethod::PIX);
 
-        $this->assertInstanceOf(TaxaDoPix::class, $regraDeCalculo);
+        $this->assertInstanceOf(PixFee::class, $regraDeCalculo);
     }
 }

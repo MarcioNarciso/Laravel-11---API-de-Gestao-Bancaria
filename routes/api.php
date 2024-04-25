@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\TransacaoController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Route;
  * 
  * "only" define quais ações a controller deve tratar.
  */
-Route::apiResource('contas', AccountController::class)->only([
+Route::apiResource('accounts', AccountController::class)->only([
     'index', 'show', 'store', 'destroy'
 ]);
 
-Route::post('/transacao', [TransacaoController::class, 'transacao'])->name('transacao');
-Route::get('/transacao/{conta}', [TransacaoController::class, 'listarTransacoes'])->name('listarTransacoes');
+Route::post('/transactions', [TransactionController::class, 'transaction']);
+Route::get('/transactions/{account}', [TransactionController::class, 'listTransactions']);
