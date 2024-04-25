@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class TransacaoBancariaService
 {
+
+    /**
+     * Injeta as dependências da service pelo Service Container.
+     */
     public function __construct(
         private RegraCalculoTaxaFactory $regraCalculoTaxaFactory
     ){}
@@ -16,7 +20,6 @@ class TransacaoBancariaService
      * Se não for possível realizar a transação, uma exceção é lançada.
      * 
      * @param TransacaoBancaria $transacaoBancaria  Define o tipo de forma de pagamento, o valor transacionado e as contas.
-     * @return $this
      * @throws \App\Exceptions\ContaComSaldoInsuficienteException
      * @throws \App\Exceptions\RegraCalculoTaxaInexistenteException
      */
@@ -27,8 +30,9 @@ class TransacaoBancariaService
             /**
              * Calcula o valor da transação com base na taxa da forma de pagamento.
              */
-            $valorDaTransacao = $this->regraCalculoTaxaFactory->make($transacaoBancaria->forma_pagamento)
-                                                              ->calcularValorTaxa($transacaoBancaria->valor);
+            $valorDaTransacao = $this->regraCalculoTaxaFactory
+                                     ->make($transacaoBancaria->formaPagamento)
+                                     ->calcularValorTaxa($transacaoBancaria->valor);
     
             /**
              * Valor total que deve ser descontado da conta pagadora.

@@ -16,6 +16,9 @@ use OpenApi\Attributes as OA;
 
 class TransacaoController extends Controller
 {
+    /**
+     * Injeta as dependências da controller pelo Service Container.
+     */
     public function __construct(
         private TransacaoBancariaService $transacaoService
     ){}
@@ -64,9 +67,9 @@ class TransacaoController extends Controller
          * A forma de pagamento deve ser somente um caractere em maiúsculo.
          */
         $validator = Validator::make($dados, [
-            'forma_pagamento' => 'required|size:1|uppercase',
-            'pagador_id' => 'required|integer|min:1',
-            'recebedor_id' => 'required|integer|min:1',
+            'formaPagamento' => 'required|size:1|uppercase',
+            'pagadorId' => 'required|integer|min:1',
+            'recebedorId' => 'required|integer|min:1',
             'valor' => 'required|numeric|min:1'
         ]);
 
@@ -74,28 +77,31 @@ class TransacaoController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        $formaDeParamento = FormaPagamento::tryFrom($dados['forma_pagamento']);
-
         /**
          * Caso a forma de pagamento fornecida seja inválida, retorna o HTTP STATUS 400.
          */
+        $formaDeParamento = FormaPagamento::tryFrom($dados['formaPagamento']);
+
         if (empty($formaDeParamento)) {
             return response(status: Response::HTTP_BAD_REQUEST);
         }
-
-        $pagador = Conta::find($dados['pagador_id']);
-        $recebedor = Conta::find($dados['recebedor_id']);
 
         /**
          * Caso a conta pagadora e/ou recebedora informada não exista, 
          * retorna o HTTP STATUS 404 para o cliente.
          */
+        $pagador = Conta::find($dados['pagadorId']);
+        $recebedor = Conta::find($dados['recebedorId']);
+
         if (empty($pagador) || empty($recebedor)) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
+        /**
+         * Instancia a transação.
+         */
         $transacao = new TransacaoBancaria([
-            'forma_pagamento' => $formaDeParamento, 
+            'formaPagamento' => $formaDeParamento, 
             'valor' => $dados['valor']
         ]);
 

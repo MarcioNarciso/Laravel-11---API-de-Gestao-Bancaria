@@ -38,7 +38,7 @@ class AccountController extends Controller
      * Busca determinada conta pelo ID e retorna para o cliente.
      */
     #[OA\Get(
-        path:"/accounts",
+        path:"/accounts/{id}",
         tags:["Accounts"],
         description:'Retorna informações da conta específicada pelo parâmetro 
         "id" no path.',
@@ -162,9 +162,9 @@ class AccountController extends Controller
             )
         ]
     )]
-    public function destroy(Conta $contum)
+    public function destroy(Conta $conta)
     {
-        $contum->delete();
+        $conta->delete();
 
         return response(status: Response::HTTP_OK);
     }
