@@ -14,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('transacoes_bancarias', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('recebedor_id');
-            $table->bigInteger('pagador_id');
-            $table->enum('forma_pagamento', [
+            $table->bigInteger('recebedorId');
+            $table->bigInteger('pagadorId');
+            $table->enum('formaPagamento', [
                 FormaPagamento::CREDITO->value, FormaPagamento::DEBITO->value,
                 FormaPagamento::PIX->value
             ]);
