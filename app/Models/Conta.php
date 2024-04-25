@@ -12,12 +12,22 @@ class Conta extends BaseModel
 {
     use SoftDeletes;
 
+    /**
+     * Define os nomes das colunas "created at", "updated at" e "deleted at".
+     */
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+    const DELETED_AT = 'deletedAt';
+
     protected $fillable = [
         'id', 'saldo'
     ];
 
     /**
      * Subtrai do saldo da conta o valor que ela está pagando em uma transação.
+     * 
+     * Se o saldo da conta for insuficiente para a subtração, é lançada uma exceção.
+     * 
      * @param float $valor
      * @return $this
      * @throws \App\Exceptions\ContaComSaldoInsuficienteException

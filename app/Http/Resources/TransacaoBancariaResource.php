@@ -11,21 +11,21 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: "Transação Bancária",
     type: "object",
-    required: ["recebedor_id", "pagador_id", "forma_pagamento", "valor"],
+    required: ["recebedorId", "pagadorId", "formaPagamento", "valor"],
     properties: [
         new OA\Property(
-            property:"recebedor_id",
-            title:"recebedor_id",
+            property:"recebedorId",
+            title:"ID da conta do recebedor",
             type:"integer"
         ),
         new OA\Property(
-            property:"pagador_id",
-            title:"pagador_id",
+            property:"pagadorId",
+            title:"ID da conta do pagador",
             type:"integer"
         ),
         new OA\Property(
-            property:"forma_pagamento",
-            title:"forma_pagamento",
+            property:"formaPagamento",
+            title:"Meio que o pagamento foi realizado.",
             type:"string",
             description: "Formas de pagamento aceitas: 'C' (Crédito), 'D' (Débito) e 'P' (Pix)"
         ),
@@ -46,11 +46,11 @@ class TransacaoBancariaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'recebedor_id' => $this->recebedor_id,
-            'pagador_id' => $this->pagador_id,
-            'forma_pagamento' => $this->forma_pagamento,
+            'recebedorId' => $this->recebedorId,
+            'pagadorId' => $this->pagadorId,
+            'formaPagamento' => $this->formaPagamento,
             'valor' => formatCurrency($this->valor),
-            'realizada_em' => $this->created_at
+            'realizadaEm' => $this->createdAt
         ];
     }
 }

@@ -21,8 +21,9 @@ return new class extends Migration
                 FormaPagamento::PIX->value
             ]);
             $table->float('valor');
-            $table->softDeletes();
-            $table->timestamps();
+            $table->softDeletes('deletedAt');
+            $table->timestamp('createdAt')->nullable();
+            $table->timestamp('updatedAt')->nullable();
         });
     }
 

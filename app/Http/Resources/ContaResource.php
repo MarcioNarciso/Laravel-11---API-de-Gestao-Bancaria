@@ -14,13 +14,13 @@ use OpenApi\Attributes as OA;
     required: ["saldo"],
     properties: [
         new OA\Property(
-            property:"conta_id",
-            title:"conta_id",
+            property:"contaId",
+            title:"ID da conta",
             type:"integer"
         ),
         new OA\Property(
             property:"saldo",
-            title:"saldo",
+            title:"Saldo da conta",
             type:"number"
         )
     ]
@@ -35,9 +35,9 @@ class ContaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'conta_id' => $this->id,
+            'contaId' => $this->id,
             'saldo' => formatCurrency($this->saldo),
-            'criada_em' => $this->created_at
+            'criadaEm' => $this->createdAt
         ];
     }
 }

@@ -13,30 +13,37 @@ class TransacaoBancaria extends BaseModel
     use SoftDeletes;
     use UnchangeableModel;
 
+    /**
+     * Define os nomes das colunas "created at", "updated at" e "deleted at".
+     */
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+    const DELETED_AT = 'deletedAt';
+
     protected $table = 'transacoes_bancarias';
 
     protected $fillable = [
-        'forma_pagamento', 'valor'
+        'formaPagamento', 'valor'
     ];
 
     protected $casts = [
-        'forma_pagamento' => FormaPagamento::class
+        'formaPagamento' => FormaPagamento::class
     ];
 
     public function pagador() : BelongsTo
     {
-        return $this->belongsTo(Conta::class, 'pagador_id');
+        return $this->belongsTo(Conta::class, 'pagadorId');
     }
 
     public function recebedor() : BelongsTo
     {
-        return $this->belongsTo(Conta::class, 'recebedor_id');
+        return $this->belongsTo(Conta::class, 'recebedorId');
     }
 
     public static function getTransacoesDaConta(Conta $conta)
     {
-        return TransacaoBancaria::where('pagador_id', $conta->id)
-                                ->orWhere('recebedor_id', $conta->id)
+        return TransacaoBancaria::where('pagadorId', $conta->id)
+                                ->orWhere('recebedorId', $conta->id)
                                 ->get();
     }
 }
