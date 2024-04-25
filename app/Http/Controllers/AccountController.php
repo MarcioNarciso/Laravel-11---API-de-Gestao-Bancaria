@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ContaResource;
 use App\Models\Conta;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
-class ContaController extends Controller
+class AccountController extends Controller
 {
     /**
      * Endpoint para consultar contas.
      */
     #[OA\Get(
-        path:"/conta",
-        tags:["Conta"],
+        path:"/accounts",
+        tags:["Accounts"],
         description:'Retorna informações da conta específicada pelo parâmetro 
         "id" na query string ou, se o ID for omitido, retorna uma listagem de 
         todas as contas cadastradas',
@@ -53,12 +54,12 @@ class ContaController extends Controller
     /**
      * Busca determinada conta pelo ID e retorna para o cliente.
      */
-    public function show(Conta $contum)
+    public function show(Conta $conta)
     {
         /**
          * A conta existe e ela é retornada para o cliente.
          */
-        return response(new ContaResource($contum));
+        return response(new ContaResource($conta));
     }
 
     /**
@@ -138,12 +139,17 @@ class ContaController extends Controller
         }
 
         //
-        $conta = Conta::create([
-            'id' => $conta['conta_id'] ?? null,
-            'saldo' => $conta['valor']
-        ]);
 
-        return response(new ContaResource($conta), Response::HTTP_CREATED);
+        try {
+            $conta = Conta::create([
+                'id' => $conta['conta_id'] ?? null,
+                'saldo' => $conta['valor']
+            ]);
+    
+            return response(new ContaResource($conta), Response::HTTP_CREATED);
+        } catch (UniqueConstraintViolationException) {
+            return response(status: Response::HTTP_CONFLICT);
+        }
     }
 
     /**

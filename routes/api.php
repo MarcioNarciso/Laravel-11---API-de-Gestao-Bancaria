@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ContaController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\TransacaoController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
  * 
  * "only" define quais ações a controller deve tratar.
  */
-Route::apiResource('conta', ContaController::class)->only([
+Route::apiResource('contas', AccountController::class)->only([
     'index', 'show', 'store', 'destroy'
 ]);
 
