@@ -4,12 +4,11 @@ namespace App\Models;
 
 use App\Exceptions\ContaComSaldoInsuficienteException;
 use App\Factories\RegraCalculoTaxaFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
-class Conta extends Model
+class Conta extends BaseModel
 {
     use SoftDeletes;
 

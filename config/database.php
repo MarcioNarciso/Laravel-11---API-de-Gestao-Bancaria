@@ -39,6 +39,13 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        'mongodb' => [
+            'driver' => 'mongodb',
+            'dns' => env('DB_URI', 'mongodb://127.0.0.1:27017'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'host'=> env('DB_HOST','127.0.0.1')
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

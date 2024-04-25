@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TransacaoBancaria extends Model
+class TransacaoBancaria extends BaseModel
 {
     use SoftDeletes;
     use UnchangeableModel;
