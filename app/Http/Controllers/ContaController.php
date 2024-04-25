@@ -47,33 +47,18 @@ class ContaController extends Controller
     )]
     public function index(Request $request)
     {
-        $contaId = $request->query('id');
-
-        /**
-         * Se o parâmetro "id" não existir, retorna todas as contas cadastradas.
-         */
-        if (empty($contaId)) {
-            return response(ContaResource::collection(Conta::all()));
-        }
-
-        return $this->show($contaId);
+        return response(ContaResource::collection(Conta::all()));
     }
 
     /**
      * Busca determinada conta pelo ID e retorna para o cliente.
      */
-    private function show(int $id)
+    public function show(Conta $contum)
     {
-        $conta = Conta::find($id);
-
-        if (empty($conta)) {
-            return response(status: Response::HTTP_NOT_FOUND);
-        }
-
         /**
          * A conta existe e ela é retornada para o cliente.
          */
-        return response(new ContaResource($conta));
+        return response(new ContaResource($contum));
     }
 
     /**
@@ -190,15 +175,9 @@ class ContaController extends Controller
             )
         ]
     )]
-    public function destroy(string $id)
+    public function destroy(Conta $contum)
     {
-        $conta = Conta::find($id);
-
-        if (empty($conta)) {
-            return response(status: Response::HTTP_NOT_FOUND);
-        }
-
-        $conta->delete();
+        $contum->delete();
 
         return response(status: Response::HTTP_OK);
     }
