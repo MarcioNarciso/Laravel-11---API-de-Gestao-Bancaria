@@ -152,14 +152,7 @@ class TransacaoController extends Controller
             )
         ]
     )]
-    public function listarTransacoes(int $contaId) {
-        
-        $conta = Conta::find($contaId);
-
-        if (empty($conta)) {
-            return response(status: Response::HTTP_NOT_FOUND);
-        }
-
+    public function listarTransacoes(Conta $conta) {
         $transacoesDaConta = TransacaoBancaria::getTransacoesDaConta($conta);
 
         return response(TransacaoBancariaResource::collection($transacoesDaConta));

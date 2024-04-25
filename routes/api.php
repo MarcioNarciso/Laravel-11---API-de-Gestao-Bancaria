@@ -15,4 +15,4 @@ Route::apiResource('contas', AccountController::class)->only([
 ]);
 
 Route::post('/transacao', [TransacaoController::class, 'transacao'])->name('transacao');
-Route::get('/transacao/{contaId}', [TransacaoController::class, 'listarTransacoes'])->name('listarTransacoes');
+Route::get('/transacao/{conta}', [TransacaoController::class, 'listarTransacoes'])->name('listarTransacoes');
