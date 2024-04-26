@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PaymentMethod;
 use App\Traits\UnchangeableModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,10 +41,10 @@ class BankTransaction extends BaseModel
         return $this->belongsTo(Account::class, 'receiverId');
     }
 
-    public static function getAccountTransactions(Account $account)
+    public static function getAccountTransactions(Account $account, ?int $perPage = null, ?int $page) : LengthAwarePaginator
     {
         return BankTransaction::where('payerId', $account->id)
                                 ->orWhere('receiverId', $account->id)
-                                ->get();
+                                ->paginate($perPage, page: $page);
     }
 }

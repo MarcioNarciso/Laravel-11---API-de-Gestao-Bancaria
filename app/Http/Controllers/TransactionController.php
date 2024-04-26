@@ -7,8 +7,9 @@ use App\Exceptions\AccountWithInsufficienteBalanceException;
 use App\Exceptions\NonExistFeeCalculcationRuleException;
 use App\Http\Resources\AccountResource;
 use App\Http\Resources\BankTransactionResource;
+use App\Interfaces\Repositories\AccountRepositoryInterface;
+use App\Interfaces\Repositories\BankTransactionRepositoryInterface;
 use App\Interfaces\Services\BankTransactionServiceInterface;
-use App\Models\Account;
 use App\Models\BankTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +22,9 @@ class TransactionController extends Controller
      * Injeta as dependências da controller pelo Service Container.
      */
     public function __construct(
-        private BankTransactionServiceInterface $bankTransactionService
+        private BankTransactionServiceInterface $bankTransactionService,
+        private BankTransactionRepositoryInterface $bankTransactionRepository,
+        private AccountRepositoryInterface $accountRepository
     ){}
 
     /**
@@ -91,8 +94,8 @@ class TransactionController extends Controller
          * Caso a conta pagadora e/ou recebedora informada não exista, 
          * retorna o HTTP STATUS 404 para o cliente.
          */
-        $payer = Account::find($data['payerId']);
-        $receiver = Account::find($data['receiverId']);
+        $payer = $this->accountRepository->findById($data['payerId']);
+        $receiver = $this->accountRepository->findById($data['receiverId']);
 
         if (empty($payer) || empty($receiver)) {
             return response(status: Response::HTTP_NOT_FOUND);
@@ -160,14 +163,14 @@ class TransactionController extends Controller
         ]
     )]
     public function listTransactions(string $accountId) {
-        $account = Account::find($accountId);
+        $account = $this->accountRepository->findById($accountId);
 
         if (empty($account)) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
-        $accountTransactions = BankTransaction::getAccountTransactions($account);
+        $accountTransactions = $this->bankTransactionRepository->getAccountTransactions($account, 5);
 
-        return response(BankTransactionResource::collection($accountTransactions));
+        return BankTransactionResource::collection($accountTransactions);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AccountResource;
+use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,6 +12,10 @@ use OpenApi\Attributes as OA;
 
 class AccountController extends Controller
 {
+    public function __construct(
+        private AccountRepositoryInterface $accountRepository
+    ){}
+
     /**
      * Endpoint para consultar contas.
      */
@@ -30,7 +35,8 @@ class AccountController extends Controller
     )]
     public function index(Request $request)
     {
-        $paginatedAccounts = Account::paginate(5);
+        $paginatedAccounts = $this->accountRepository->paginate(5);
+
         return AccountResource::collection($paginatedAccounts);
     }
 
@@ -69,7 +75,7 @@ class AccountController extends Controller
     )]
     public function show(string $id)
     {
-        $account = Account::find($id);
+        $account = $this->accountRepository->findById($id);
 
         if (empty($account)) {
             return response(status: Response::HTTP_NOT_FOUND);
@@ -113,6 +119,10 @@ class AccountController extends Controller
             new OA\Response(
                 response:400,
                 description:"Informações inválidas da conta."
+            ),
+            new OA\Response(
+                response: 500,
+                description:"Erro ao persistir a nova conta. Conta não persistida."
             )
         ]
     )]
@@ -133,9 +143,15 @@ class AccountController extends Controller
             return response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        $account = Account::create([
+        $account = new Account([
             'balance' => $account['value']
         ]);
+
+        try {
+            $this->accountRepository->save($account);
+        } catch (\Exception) {
+            return response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return response(new AccountResource($account), Response::HTTP_CREATED);
     }
@@ -171,13 +187,9 @@ class AccountController extends Controller
     )]
     public function destroy(string $id)
     {
-        $account = Account::find($id);
-
-        if (empty($account)) {
+        if (empty($this->accountRepository->deleteById($id))) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
-
-        $account->delete();
 
         return response(status: Response::HTTP_OK);
     }
