@@ -2,6 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "API de Gestão Bancária",
+        "description": "Define uma controller base comum para todas as controllers.",
         "version": "1.0.0"
     },
     "paths": {
@@ -10,7 +11,7 @@
                 "tags": [
                     "Contas"
                 ],
-                "summary": "Endpoint para consultar contas.",
+                "summary": "Endpoint para consultar todas as contas ativas no sistema.",
                 "description": "Retorna uma lista paginada de todas as contas cadastradas,",
                 "operationId": "a5af6b64c5ff2ea0a75cec62e63a632e",
                 "responses": {
@@ -30,8 +31,8 @@
                 "tags": [
                     "Contas"
                 ],
-                "summary": "Armazena a nova conta no banco de dados.",
-                "description": "Cadastra uma nova conta para transações futuras.",
+                "summary": "Endpoint para a criação de uma nova conta.",
+                "description": "Cadastra uma nova conta com saldo para transações futuras.",
                 "operationId": "502f0663eeceed364480dc3665222a60",
                 "requestBody": {
                     "description": "'value' é o saldo inicial da conta. Deve ser um valor \n            maior que zero.",
@@ -63,6 +64,9 @@
                     },
                     "400": {
                         "description": "Informações inválidas da conta."
+                    },
+                    "500": {
+                        "description": "Erro ao persistir a nova conta. Conta não persistida."
                     }
                 }
             }
@@ -72,7 +76,7 @@
                 "tags": [
                     "Contas"
                 ],
-                "summary": "Busca determinada conta pelo ID e retorna para o cliente.",
+                "summary": "Endpoint para buscar determinada conta pelo ID.",
                 "description": "Retorna informações da conta específicada pelo parâmetro \n        \"id\" no path.",
                 "operationId": "e6952cf57a3b1d885eb38d1f7929f5cc",
                 "parameters": [
@@ -106,7 +110,8 @@
                 "tags": [
                     "Contas"
                 ],
-                "summary": "Desativa determinada conta pelo ID.",
+                "summary": "Endpoint para desativação de determinada conta.",
+                "description": "Desativa determinada conta especificada pelo parâmetro \n        'id' no path",
                 "operationId": "05ff22e38b805a39dffeb038a88d2508",
                 "parameters": [
                     {
@@ -125,7 +130,7 @@
                         "description": "Conta desativada com sucesso."
                     },
                     "404": {
-                        "description": "Foi requisitada uma determinada conta, mas ela não existe ou ja estava inativa."
+                        "description": "Foi requisitada uma determinada conta, mas ela não \n                existe ou já estava desativada."
                     }
                 }
             }
@@ -135,8 +140,8 @@
                 "tags": [
                     "Transações"
                 ],
-                "summary": "Realiza um transação entre duas contas bancárias.",
-                "description": "Realizar a movimentação de saldos: subtrai do pagador \n        (junto com a taxa) e adiciona ao receber (sem taxa).",
+                "summary": "Endpoint para realizar uma transação entre duas contas bancárias.",
+                "description": "Realiza a movimentação de saldos: subtrai do pagador \n        (junto com a taxa) e adiciona ao recebedor (sem taxa).",
                 "operationId": "c78fc912fadbdd82cf985cb3bb8067f2",
                 "requestBody": {
                     "description": "Informações necessárias para realizar a movimentação de \n            saldo entre as contas.",
@@ -161,10 +166,13 @@
                         }
                     },
                     "400": {
-                        "description": "Informações inválidas da transação."
+                        "description": "Informações inválidas da transação ou o saldo do \n                pagador é insuficiente para realizar a transação."
                     },
                     "404": {
-                        "description": "A conta do recebedor e/ou do pagador não foi encontrada\n                ou o saldo do pagador é insuficiente para realizar a transação."
+                        "description": "A conta do recebedor e/ou do pagador não foi encontrada."
+                    },
+                    "500": {
+                        "description": "Erro ao persistir a transação."
                     }
                 }
             }
@@ -174,8 +182,8 @@
                 "tags": [
                     "Transações"
                 ],
-                "summary": "Lista todas as transações de determinada conta.",
-                "description": "Retorna uma lista com todas as transações de determinada conta.",
+                "summary": "Endpoint para Listar todas as transações de determinada conta.",
+                "description": "Retorna uma lista paginada com todas as transações de \n        determinada conta.",
                 "operationId": "c82fa7c4e7d23d30012f894e69556bd9",
                 "parameters": [
                     {
@@ -191,7 +199,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Uma listagem de todas transações de uma conta.",
+                        "description": "Lista paginada de todas transações de uma conta.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -217,6 +225,7 @@
                 "properties": {
                     "accountId": {
                         "title": "ID da conta",
+                        "description": "Classe que representa o recurso \"Conta\" enviado para o cliente.",
                         "type": "string"
                     },
                     "balance": {
@@ -241,6 +250,7 @@
                 "properties": {
                     "receiverId": {
                         "title": "ID da conta do recebedor",
+                        "description": "Classe que representa o recurso \"Transação Bancária\" enviado para o cliente.",
                         "type": "string"
                     },
                     "payerId": {
@@ -253,7 +263,7 @@
                         "type": "string"
                     },
                     "value": {
-                        "title": "Valor da transação",
+                        "title": "Valor transacionado.",
                         "type": "number"
                     }
                 },
