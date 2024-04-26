@@ -2,6 +2,7 @@
 
 namespace App\Factories;
 use App\Enums\PaymentMethod;
+use App\Interfaces\Factories\FeeCalculationRuleFactoryInterface;
 use App\Models\FeeCalculationRules\{
     CreditFee, 
     DebitFee, 
@@ -10,7 +11,7 @@ use App\Models\FeeCalculationRules\{
 };
 use App\Exceptions\NonExistFeeCalculcationRuleException;
 
-class FeeCalculationRuleFactory
+class FeeCalculationRuleFactory implements FeeCalculationRuleFactoryInterface
 {
     private static array $rules = [
         PaymentMethod::CREDIT->value => CreditFee::class,

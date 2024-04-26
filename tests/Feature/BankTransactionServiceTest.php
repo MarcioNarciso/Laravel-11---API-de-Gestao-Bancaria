@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\PaymentMethod;
 use App\Exceptions\AccountWithInsufficienteBalanceException;
-use App\Services\BankTransactionService;
+use App\Interfaces\Services\BankTransactionServiceInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Builder\BankTransactionBuilder;
 use Tests\Builder\BankTransactionDirector;
@@ -16,14 +16,14 @@ class BankTransactionServiceTest extends TestCase
     use RefreshDatabase;
 
     private BankTransactionDirector $bankTransactionDirector;
-    private BankTransactionService $service;
+    private BankTransactionServiceInterface $service;
 
     #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
         $this->bankTransactionDirector = new BankTransactionDirector(new BankTransactionBuilder());
-        $this->service = $this->app->make(BankTransactionService::class);
+        $this->service = $this->app->make(BankTransactionServiceInterface::class);
     }
 
     public function test_deve_efetuar_pagamento_via_cartao_de_debito(): void

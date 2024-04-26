@@ -1,18 +1,19 @@
 <?php 
 
 namespace App\Services;
-use App\Factories\FeeCalculationRuleFactory;
+use App\Interfaces\Factories\FeeCalculationRuleFactoryInterface;
+use App\Interfaces\Services\BankTransactionServiceInterface;
 use App\Models\BankTransaction;
 use Illuminate\Support\Facades\DB;
 
-class BankTransactionService
+class BankTransactionService implements BankTransactionServiceInterface
 {
 
     /**
      * Injeta as dependências da service pelo Service Container.
      */
     public function __construct(
-        private FeeCalculationRuleFactory $feeCalculationRuleFactory
+        private FeeCalculationRuleFactoryInterface $feeCalculationRuleFactory
     ){}
 
     /**
@@ -23,7 +24,7 @@ class BankTransactionService
      * @throws \App\Exceptions\AccountWithInsufficienteBalanceException
      * @throws \App\Exceptions\NonExistFeeCalculcationRuleException
      */
-    public function execute(BankTransaction $bankTransaction) : void
+    public function execute(BankTransaction $bankTransaction) : self
     {
         DB::transaction(function () use ($bankTransaction) {
 
@@ -56,6 +57,8 @@ class BankTransactionService
             $bankTransaction->save();
 
         });
+
+        return $this;
     }
 
 }

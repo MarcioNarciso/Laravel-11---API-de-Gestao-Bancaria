@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentMethod;
 use App\Exceptions\AccountWithInsufficienteBalanceException;
-use App\Exceptions\ContaComSaldoInsuficienteException;
 use App\Exceptions\NonExistFeeCalculcationRuleException;
 use App\Http\Resources\AccountResource;
 use App\Http\Resources\BankTransactionResource;
+use App\Interfaces\Services\BankTransactionServiceInterface;
 use App\Models\Account;
 use App\Models\BankTransaction;
-use App\Services\BankTransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +21,7 @@ class TransactionController extends Controller
      * Injeta as dependências da controller pelo Service Container.
      */
     public function __construct(
-        private BankTransactionService $bankTransactionService
+        private BankTransactionServiceInterface $bankTransactionService
     ){}
 
     /**
