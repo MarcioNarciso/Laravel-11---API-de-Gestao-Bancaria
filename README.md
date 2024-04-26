@@ -1,26 +1,37 @@
 # API de Gestão Bancária
 
-O desafio consistia em criar dois endpoints: "/conta" e "/transacao".
+A API implementada possui suas rotas documentadas utilizando Swagger.
+A documentação está disponível na URL raiz.
 
-O endpoint "/conta" deveria criar e fornecer informações sobre o número da conta
-e o saldo. O endpoint "/transacao" seria responsável por realizar diversas 
-operações financeiras.
+A API fornece um endpoint para cadastro e consulta de contas e outro para realizar 
+e listar transações financeiras entre as contas.
 
-A API implementada para esse desafio pode ser acessada pelo link: 
-[API de Gestão Bancária](http://api-bancaria.marcionarciso.dev.br:8080/).
 
-### Padrões de Projeto Utilizados
+## Padrões de Projeto Utilizados
 
-Nesse projeto, utilizei o padrão de projeto Template Method junto com o 
-Factory Method (simplificado) para flexibilizar a criação de novas formas de 
-pagamento e melhorar a coesão e acoplamento. Dessa forma, requer pouca alteração 
-no código para adicionar uma nova forma de pagamento.
+### Template Method & Factory Method
+Neste projeto, utilizei o padrão de projeto Template Method junto com o 
+Factory Method para flexibilizar a criação de novas formas de pagamento e 
+melhorar a coesão e acoplamento. Dessa forma, requer pouca alteração 
+no código para adicionar uma nova forma de pagamento e também evita uma 
+"dependência implícita".
 
-Tentei aproveitar os benefícios do Active Record (já utilizado pelo Laravel) para 
-manter uma boa coesão.
+### Active Record
+Padrão já utilizado pelo Laravel. Aproveitei os benefícios do Active Record para 
+manter as classes mais coesas.
 
+### Builder & Director
 Utilizei o padrão Builder com Director para simplificar a criação de objetos para
-os testes automatizados.
+os testes automatizados (Test Data Builder).
+
+### Repository
+Defini uma interface e implementei um repositório para cada classe model. 
+Dessa forma, a lógica da camada de acesso aos dados fica mais desacoplada da
+aplicação e facilita a troca do repositório por outras implementações.
+
+### Service Layer
+Defini um interface e implementei uma camada de serviço para encapsular a lógica
+de negócio e mantê-la mais desacoplada da aplicação.
 
 
 ## Pré-requisitos
@@ -33,7 +44,7 @@ Para executar esse projeto, é necessário já ter instalado no sistema:
 
 ## Scripts de Setup do Ambiente
 
-Caso queira realizar o deploy desse projeto em um distribuição do Linux baseada
+Caso queira realizar o deploy desse projeto em um distribuição Linux baseada
 no Debian, na raiz do projeto há a pasta "scripts/" que contém Shell Scripts 
 enumerados para auxiliar na preparação do ambiente:
 
