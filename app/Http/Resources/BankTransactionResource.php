@@ -8,6 +8,9 @@ use function App\Helpers\formatCurrency;
 
 use OpenApi\Attributes as OA;
 
+/**
+ * Classe que representa o recurso "Transação Bancária" enviado para o cliente.
+ */
 #[OA\Schema(
     title: "Bank Transaction",
     type: "object",
@@ -31,7 +34,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property:"value",
-            title:"Valor da transação",
+            title:"Valor transacionado.",
             type:"number"
         )
     ]

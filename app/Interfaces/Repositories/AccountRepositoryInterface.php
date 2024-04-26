@@ -4,6 +4,9 @@ namespace App\Interfaces\Repositories;
 use App\Models\Account;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
+/**
+ * Interface que define o repositório das contas.
+ */
 interface AccountRepositoryInterface {
 
     /**
@@ -20,8 +23,8 @@ interface AccountRepositoryInterface {
     /**
      * Busca determinada conta pelo seu ID.
      * 
-     * @param string|int $id
-     * @return null|Account
+     * @param   string|int      $id
+     * @return  null|\App\Models\Account
      */
     public function findById(string|int $id) : ?Account;
 
@@ -30,7 +33,9 @@ interface AccountRepositoryInterface {
      *
      * Se ocorrer algum erro, uma exceção é lançada.
      * 
-     * @return $this
+     * @param   \App\Models\Account $account
+     * @return  $this
+     * 
      * @throws \App\Exceptions\ErrorPersistingModelException 
      */
     public function save(Account $account) : self;
@@ -40,8 +45,8 @@ interface AccountRepositoryInterface {
      * 
      * Se a conta não existir ou já estiver desativada, retorna nulo.
      * 
-     * @param   int|string  $id
-     * @return  ?\App\Models\Account
+     * @param   int|string              $id
+     * @return  null|\App\Models\Account
      */
     public function deleteById(string|int $id) : ?Account;
 

@@ -25,8 +25,9 @@ class Account extends BaseModel
      * 
      * Se o saldo da conta for insuficiente para a subtração, é lançada uma exceção.
      * 
-     * @param float $value
-     * @return $this
+     * @param   float $value
+     * @return  $this
+     * 
      * @throws \App\Exceptions\AccountWithInsufficienteBalanceException
      */
     public function subtractFromBalance(float $value) : self
@@ -43,9 +44,10 @@ class Account extends BaseModel
     }
 
     /**
-     * Adiciona ao saldo da conta o valor que ela está recebendo de uma transação.
-     * @param float $value
-     * @return $this
+     * Adiciona ao saldo da conta o valor que ela está recebendo em uma transação.
+     * 
+     * @param   float $value
+     * @return  $this
      */
     public function addToBalance(float $value) : self
     {

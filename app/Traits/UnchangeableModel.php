@@ -52,11 +52,25 @@ trait UnchangeableModel
         return $saved;
     }
 
+    /**
+     * Previne a atualização da model.
+     * 
+     * @param   array   $attributes
+     * @param   array   $options
+     */
     public function update(array $attributes = [], array $options = [])
     {
         $this->prevent(__FUNCTION__);
     }
 
+    /**
+     * Lança uma exceção impedindo a execução do método não permitido.
+     * 
+     * @param   mixed $methodName
+     * @return  never
+     * 
+     * @throws \BadMethodCallException
+     */
     private function prevent(string $methodName): never
     {
         throw new \BadMethodCallException("A operação '{$methodName}' não é permitida. "

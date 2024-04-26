@@ -11,6 +11,13 @@ use App\Models\FeeCalculationRules\{
 };
 use App\Exceptions\NonExistFeeCalculcationRuleException;
 
+/**
+ * Classe que lida com a lógica de criação da instância da regra de cálculo da
+ * taxa sobre a forma de pagamento.
+ * 
+ * Cria uma dependência entre a forma de pagamento e sua taxa, de forma que não
+ * se pode utilizar uma forma de pagamento sem definir uma taxa para ela.
+ */
 class FeeCalculationRuleFactory implements FeeCalculationRuleFactoryInterface
 {
     private static array $rules = [
@@ -26,6 +33,7 @@ class FeeCalculationRuleFactory implements FeeCalculationRuleFactoryInterface
      * 
      * @param PaymentMethod $paymentMethod
      * @return \App\Models\FeeCalculationRules\FeeCalculationRule
+     * 
      * @throws \App\Exceptions\NonExistFeeCalculcationRuleException
      */
     public function make(PaymentMethod $paymentMethod) : FeeCalculationRule
@@ -36,7 +44,7 @@ class FeeCalculationRuleFactory implements FeeCalculationRuleFactoryInterface
         $calculationRule = self::$rules[$paymentMethod->value];
 
         /**
-         * Se não existir a classe da regra de cálculo correspondente a forma de 
+         * Se não existir a classe da regra de cálculo correspondente à forma de 
          * pagamento, é lançada uma exceção.
          */
         if (empty($calculationRule)) {

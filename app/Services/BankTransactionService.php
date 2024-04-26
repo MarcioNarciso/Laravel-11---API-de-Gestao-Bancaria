@@ -25,13 +25,18 @@ class BankTransactionService implements BankTransactionServiceInterface
      * 
      * Se não for possível realizar a transação, uma exceção é lançada.
      * 
-     * @param BankTransaction $bankTransaction  Define o tipo de forma de pagamento, o valor transacionado e as contas.
+     * @param   \App\Models\BankTransaction $bankTransaction  Define o tipo de forma de pagamento, o valor transacionado e as contas.
+     * @return  $this
+     * 
      * @throws \App\Exceptions\AccountWithInsufficienteBalanceException
      * @throws \App\Exceptions\NonExistFeeCalculcationRuleException
      * @throws \App\Exceptions\ErrorPersistingModelException
      */
     public function execute(BankTransaction $bankTransaction) : self
     {
+        /**
+         * Realiza uma transação no banco de dados.
+         */
         DB::transaction(function () use ($bankTransaction) {
 
             /**

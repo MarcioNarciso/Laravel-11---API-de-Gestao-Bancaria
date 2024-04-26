@@ -8,6 +8,9 @@ use function App\Helpers\formatCurrency;
 
 use OpenApi\Attributes as OA;
 
+/**
+ * Classe que representa o recurso "Conta" enviado para o cliente.
+ */
 #[OA\Schema(
     title: "Account",
     type: "object",

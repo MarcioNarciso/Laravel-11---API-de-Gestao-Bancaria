@@ -12,12 +12,15 @@ use OpenApi\Attributes as OA;
 
 class AccountController extends Controller
 {
+    /**
+     * Injeta as dependências da controller pelo Service Container.
+     */
     public function __construct(
         private AccountRepositoryInterface $accountRepository
     ){}
 
     /**
-     * Endpoint para consultar contas.
+     * Endpoint para consultar todas as contas ativas no sistema.
      */
     #[OA\Get(
         path:"/accounts",
@@ -41,7 +44,7 @@ class AccountController extends Controller
     }
 
     /**
-     * Busca determinada conta pelo ID e retorna para o cliente.
+     * Endpoint para buscar determinada conta pelo ID.
      */
     #[OA\Get(
         path:"/accounts/{id}",
@@ -88,12 +91,12 @@ class AccountController extends Controller
     }
 
     /**
-     * Armazena a nova conta no banco de dados.
+     * Endpoint para a criação de uma nova conta.
      */
     #[OA\Post(
         path:"/accounts",
         tags:["Contas"],
-        description:'Cadastra uma nova conta para transações futuras.',
+        description:'Cadastra uma nova conta com saldo para transações futuras.',
         requestBody: new OA\RequestBody(
             description:"'value' é o saldo inicial da conta. Deve ser um valor 
             maior que zero.",
@@ -157,11 +160,13 @@ class AccountController extends Controller
     }
 
     /**
-     * Desativa determinada conta pelo ID.
+     * Endpoint para desativação de determinada conta.
      */
     #[OA\Delete(
         path:"/accounts/{id}",
         tags:["Contas"],
+        description: "Desativa determinada conta especificada pelo parâmetro 
+        'id' no path",
         parameters: [
             new OA\Parameter(
                 parameter:"id",
@@ -181,13 +186,18 @@ class AccountController extends Controller
             ),
             new OA\Response(
                 response:404,
-                description:"Foi requisitada uma determinada conta, mas ela não existe ou ja estava inativa."
+                description:"Foi requisitada uma determinada conta, mas ela não 
+                existe ou já estava desativada."
             )
         ]
     )]
     public function destroy(string $id)
     {
         if (empty($this->accountRepository->deleteById($id))) {
+            /**
+             * Se o repositório retornar "null", a conta não foi encontrada.
+             * Então, é enviada a resposta HTTP STATUS 404.
+             */
             return response(status: Response::HTTP_NOT_FOUND);
         }
 

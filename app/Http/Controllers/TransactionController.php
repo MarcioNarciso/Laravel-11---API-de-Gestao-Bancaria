@@ -28,13 +28,13 @@ class TransactionController extends Controller
     ){}
 
     /**
-     * Realiza um transação entre duas contas bancárias.
+     * Endpoint para realizar uma transação entre duas contas bancárias.
      */
     #[OA\Post(
         path:"/transactions",
         tags:["Transações"],
-        description:'Realizar a movimentação de saldos: subtrai do pagador 
-        (junto com a taxa) e adiciona ao receber (sem taxa).',
+        description:'Realiza a movimentação de saldos: subtrai do pagador 
+        (junto com a taxa) e adiciona ao recebedor (sem taxa).',
         requestBody: new OA\RequestBody(
             description:"Informações necessárias para realizar a movimentação de 
             saldo entre as contas.",
@@ -54,12 +54,16 @@ class TransactionController extends Controller
             ),
             new OA\Response(
                 response:400,
-                description:"Informações inválidas da transação."
+                description:"Informações inválidas da transação ou o saldo do 
+                pagador é insuficiente para realizar a transação."
             ),
             new OA\Response(
                 response:404,
-                description:"A conta do recebedor e/ou do pagador não foi encontrada
-                ou o saldo do pagador é insuficiente para realizar a transação."
+                description:"A conta do recebedor e/ou do pagador não foi encontrada."
+            ),
+            new OA\Response(
+                response:500,
+                description:"Erro ao persistir a transação."
             )
         ]
     )]
@@ -109,33 +113,47 @@ class TransactionController extends Controller
             'value' => $data['value']
         ]);
 
+        /**
+         * Associa as contas pagadora e recebedora à transação.
+         */
         $transaction->payer()->associate($payer);
         $transaction->receiver()->associate($receiver);
 
         try {
 
+            /**
+             * Realiza a transação.
+             */
             $this->bankTransactionService->execute($transaction);
 
-        } catch (AccountWithInsufficienteBalanceException $e) {
-            return response(status: Response::HTTP_NOT_FOUND);
-        } catch (NonExistFeeCalculcationRuleException) {
+        } catch (AccountWithInsufficienteBalanceException | NonExistFeeCalculcationRuleException) {
             /**
-             * Caso a forma de pagamento fornecida seja inválida, retorna o HTTP STATUS 400.
-             * Forma de pagamento sem classe de cálculo da taxa.
+             * Caso a forma de pagamento fornecida seja inválida, responde com o 
+             * HTTP STATUS 400: Forma de pagamento sem classe de cálculo da taxa.
+             * 
+             * Caso a conta pagador não tenha saldo suficiente, responde com o 
+             * HTTP STATUS 400.
              */
             return response(status: Response::HTTP_BAD_REQUEST);
+        } catch (ErrorPersistingModelException) {
+            /**
+             * Caso ocorra um erro ao persistir a transação, responde com o 
+             * HTTP STATUS 500.
+             */
+            return response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response(new AccountResource($payer), Response::HTTP_CREATED);
     }
 
     /**
-     * Lista todas as transações de determinada conta.
+     * Endpoint para Listar todas as transações de determinada conta.
      */
     #[OA\Get(
         path:"/transactions/{accountId}",
         tags:["Transações"],
-        description:'Retorna uma lista com todas as transações de determinada conta.',
+        description:'Retorna uma lista paginada com todas as transações de 
+        determinada conta.',
         parameters: [
             new OA\Parameter(
                 parameter:"accountId",
@@ -151,7 +169,7 @@ class TransactionController extends Controller
         responses: [
             new OA\Response(
                 response:200,
-                description:"Uma listagem de todas transações de uma conta.",
+                description:"Lista paginada de todas transações de uma conta.",
                 content: [
                     new OA\JsonContent(ref:BankTransactionResource::class)
                 ]
@@ -169,6 +187,10 @@ class TransactionController extends Controller
             return response(status: Response::HTTP_NOT_FOUND);
         }
 
+        /**
+         * Realiza a busca paginada das transações de determinada conta, com 
+         * cinco registros por página.
+         */
         $accountTransactions = $this->bankTransactionRepository->getAccountTransactions($account, 5);
 
         return BankTransactionResource::collection($accountTransactions);
