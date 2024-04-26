@@ -9,7 +9,9 @@ class AppServiceProvider extends ServiceProvider
 {
     public $singletons = [
         \App\Interfaces\Services\BankTransactionServiceInterface::class => \App\Services\BankTransactionService::class,
-        \App\Interfaces\Factories\FeeCalculationRuleFactoryInterface::class => \App\Factories\FeeCalculationRuleFactory::class
+        \App\Interfaces\Factories\FeeCalculationRuleFactoryInterface::class => \App\Factories\FeeCalculationRuleFactory::class,
+        \App\Interfaces\Repositories\AccountRepositoryInterface::class => \App\Repositories\AccountRepository::class,
+        \App\Interfaces\Repositories\BankTransactionRepositoryInterface::class => \App\Repositories\BankTransactionRepository::class
     ];
 
     /**
