@@ -30,14 +30,14 @@ class BankTransactionService
             /**
              * Calcula o valor da transação com base na taxa da forma de pagamento.
              */
-            $transactionValue = $this->feeCalculationRuleFactory
-                                     ->make($bankTransaction->paymentMethod)
-                                     ->calculate($bankTransaction->value);
+            $transactionAmount = $this->feeCalculationRuleFactory
+                                        ->make($bankTransaction->paymentMethod)
+                                        ->calculate($bankTransaction->value);
     
             /**
              * Valor total que deve ser descontado da conta pagadora.
              */
-            $totalTransactionAmount = $transactionValue + $bankTransaction->value;
+            $totalTransactionAmount = $transactionAmount + $bankTransaction->value;
     
             /**
              * Subtrai o valor total da transação (taxa + valor da transação) 
