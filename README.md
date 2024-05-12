@@ -6,6 +6,25 @@ A documentação está disponível na URL raiz.
 A API fornece um endpoint para cadastro e consulta de contas e outro para realizar 
 e listar transações financeiras entre as contas.
 
+## Funcionalidades
+
+### Comando do Artisan
+Criei um comando no Artisan para automatizar a criação do banco de dados da 
+aplicação. Execute o comando a seguir e o banco será criado no MySQL:
+
+```
+php artisan db:create-db
+```
+
+### Endpoints
+
+#### Contas
+No endpoint de contas, pode-se criar, desativar, pesquisar e listar as contas ativas.
+
+#### Transações
+No endpoint de transações, pode-se realizar uma transação para transferência de 
+valores entre contas e listar as transações de determinada conta.
+
 
 ## Padrões de Projeto Utilizados
 
@@ -25,13 +44,18 @@ Utilizei o padrão Builder com Director para simplificar a criação de objetos 
 os testes automatizados (Test Data Builder).
 
 ### Repository
-Defini uma interface e implementei um repositório para cada classe model. 
+Definí uma interface e implementei um repositório para cada classe model. 
 Dessa forma, a lógica da camada de acesso aos dados fica mais desacoplada da
 aplicação e facilita a troca do repositório por outras implementações.
 
 ### Service Layer
-Defini um interface e implementei uma camada de serviço para encapsular a lógica
+Definí um interface e implementei uma camada de serviço para encapsular a lógica
 de negócio e mantê-la mais desacoplada da aplicação.
+
+### Singleton
+Utilizei os recursos que o Laravel fornece como uma abstração do Singleton para
+garantir que certas classes, como serviços, só fossem instanciadas uma vez e 
+injetadas como dependências corretamente.
 
 
 ## Pré-requisitos
