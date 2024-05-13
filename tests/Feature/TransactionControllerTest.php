@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class TransactionControllerTest extends TestCase
@@ -132,5 +133,26 @@ class TransactionControllerTest extends TestCase
 
         // Assert
         $resp->assertStatus(400);
+    }
+
+    public function test_deve_listar_as_transacoes_da_conta() : void
+    {
+        // Arrange
+        $resp = $this->postJson('/transactions', [
+            'paymentMethod' => 'P',
+            'payerId' => 1,
+            'receiverId' => 2,
+            'value' => 50
+        ]);
+
+        $resp->assertStatus(201);
+
+        // Act
+        $resp = $this->getJson('/transactions/1');
+
+        // Assert
+        $resp
+            ->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('data', 1)->etc());
     }
 }
