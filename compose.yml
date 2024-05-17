@@ -3,6 +3,10 @@ networks:
     name: api-gestao-bancaria-network
     driver: bridge
 
+# Cria um volume nomeado
+volumes:
+  db-data:
+
 services:
   apache-server-service:
     container_name: apache-server
@@ -30,6 +34,8 @@ services:
       - MYSQL_DATABASE=SISTEMA_GESTAO_BANCARIA
     networks:
       - api-gestao-bancaria-network
+    volumes:
+      - db-data:/var/lib/mysql
     mem_limit: 896m
     mem_reservation: 512m
     cpus: 0.5
