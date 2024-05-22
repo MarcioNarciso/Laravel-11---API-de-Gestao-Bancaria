@@ -29,8 +29,8 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 WORKDIR /var/www/html/
 
-# Cria um novo arquivo dot env para produção
-RUN cp .docker/.env .env
+# Copia o arquivo ".env" para dentro do contêiner
+RUN cp /.env /.env
 
 # Cria um symlink de public/storage para storage/app/public
 RUN php artisan storage:link
