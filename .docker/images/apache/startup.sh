@@ -6,6 +6,9 @@ php composer.phar install
 # Gera uma nova chave para produção
 php artisan key:generate
 
+# Cria um symlink de public/storage para storage/app/public
+php artisan storage:link
+
 # Gera a documentação do Swagger
 php artisan l5-swagger:generate
 

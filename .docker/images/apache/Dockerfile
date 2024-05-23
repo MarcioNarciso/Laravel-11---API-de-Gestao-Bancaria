@@ -32,7 +32,4 @@ WORKDIR /var/www/html/
 # Copia o arquivo ".env" para dentro do contêiner
 RUN cp .env /.env
 
-# Cria um symlink de public/storage para storage/app/public
-RUN php artisan storage:link
-
 CMD [".docker/images/apache/startup.sh"]
