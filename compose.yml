@@ -8,17 +8,17 @@ volumes:
   db-data:
 
 services:
-  apache-server-service:
-    container_name: apache-server
-    build:
-      context: ./
-      dockerfile: .docker/images/apache/Dockerfile
-    ports:
-      - 8999:80
-    networks:
-      - api-gestao-bancaria-network
-    depends_on:
-      - mysql-server-service
+  # apache-server-service:
+  #   container_name: apache-server
+  #   build:
+  #     context: ./
+  #     dockerfile: .docker/images/apache/Dockerfile
+  #   ports:
+  #     - 8999:80
+  #   networks:
+  #     - api-gestao-bancaria-network
+  #   depends_on:
+  #     - mysql-server-service
         # condition: service_healthy
     # mem_limit: 128m
     # mem_reservation: 64m
