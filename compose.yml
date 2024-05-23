@@ -8,21 +8,21 @@ volumes:
   db-data:
 
 services:
-  # apache-server-service:
-  #   container_name: apache-server
-  #   build:
-  #     context: ./
-  #     dockerfile: .docker/images/apache/Dockerfile
-  #   ports:
-  #     - 8999:80
-  #   networks:
-  #     - api-gestao-bancaria-network
-  #   depends_on:
-  #     - mysql-server-service
+  apache-server-service:
+    container_name: apache-server
+    build:
+      context: ./
+      dockerfile: .docker/images/apache/Dockerfile
+    ports:
+      - 8999:80
+    networks:
+      - api-gestao-bancaria-network
+    depends_on:
+      - mysql-server-service
         # condition: service_healthy
-    # mem_limit: 128m
-    # mem_reservation: 64m
-    # cpus: 0.5
+    mem_limit: 128m
+    mem_reservation: 64m
+    cpus: 0.5
 
   mysql-server-service:
     container_name: mysql-server
@@ -36,9 +36,9 @@ services:
       - api-gestao-bancaria-network
     volumes:
       - db-data:/var/lib/mysql
-    # mem_limit: 896m
-    # mem_reservation: 512m
-    # cpus: 0.5
+    mem_limit: 896m
+    mem_reservation: 512m
+    cpus: 0.5
     # healthcheck:
     #   test: ["CMD-SHELL", "exit | mysql -h localhost -P 3306 -u root -p$$MYSQL_ROOT_PASSWORD" ]
     #   interval: 5s
