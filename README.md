@@ -66,10 +66,23 @@ Para executar esse projeto, é necessário já ter instalado no sistema:
 * Nginx
 * MySQL
 
+## Usando Docker Compose (Linux)
+
+Para executar a aplicação utilizando o Docker Compose, siga os passos:
+
+1. Crie seu próprio arquivo Dot Env (".env"). Isso pode ser feito da mesma forma
+como descrito na seção "Preparando o .env";
+2. Caso ainda não tenha o Docker e o Compose instalado, executo o script <b>.scripts/00-install-docker-compose.sh</b>;
+3. Execute a aplicação com o comando:
+```
+sudo docker-compose up
+```
+
+
 ## Scripts de Setup do Ambiente
 
 Caso queira realizar o deploy desse projeto em um distribuição Linux baseada
-no Debian, na raiz do projeto há a pasta "scripts/" que contém Shell Scripts 
+no Debian, na raiz do projeto há a pasta "<b>.scripts/</b>" que contém Shell Scripts 
 enumerados para auxiliar na preparação do ambiente:
 
 0. <b>00-uninstall-apache2.sh</b> : Opcional. Remove a instalação atual do Apache 
