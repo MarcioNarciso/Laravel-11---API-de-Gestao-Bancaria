@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# Instala as dependências do projeto
+php composer.phar install
+
 echo 'Waiting for connection to the database...'
 
 # A execução do script esperará até a conexão com o banco estiver disponível
@@ -11,9 +14,6 @@ if [ $? -eq 1 ]; then
 fi
 
 echo $output
-
-# Instala as dependências do projeto
-php composer.phar install
 
 # Gera uma nova chave para produção
 php artisan key:generate
