@@ -71,9 +71,12 @@ Para executar esse projeto, é necessário já ter instalado no sistema:
 Para executar a aplicação utilizando o Docker Compose, siga os passos:
 
 1. Crie seu próprio arquivo Dot Env (".env"). Isso pode ser feito da mesma forma
-como descrito na seção "Preparando o .env";
-2. Caso ainda não tenha o Docker e o Compose instalado, executo o script <b>.scripts/00-install-docker-compose.sh</b>;
-3. Execute a aplicação com o comando:
+como descrito na seção "Preparando o .env". O ".env.example" já está configurado 
+para ser usado com o Docker Compose;
+2. Caso ainda não tenha o Docker e o Compose instalado, execute o script "<b>.scripts/00-install-docker-compose.sh</b>";
+3. Certifique-se que o usuário que está rodando os contêineres tem permissões de
+leitura e escrita no volume;
+4. Execute a aplicação com o comando:
 ```
 sudo docker-compose up
 ```
